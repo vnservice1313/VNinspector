@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หน้าจอแสดงคิว</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3fa;--surface:#fff;--surface2:#ede9f8;--border:#ddd6f3;--accent:#7c4dff;--accent2:#6535e8;--text:#1e1535;--text-dim:#5c4f80;--text-muted:#9b8ec4;--green:#22c55e;--shadow:0 2px 12px rgba(124,77,255,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;background:#000;color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.topbar{background:rgba(245,243,250,.95);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:11;backdrop-filter:blur(8px)}
+.tlogo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--text)}
+.ticon{width:30px;height:30px;background:linear-gradient(135deg,#7c4dff,#a78bfa);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.tright{display:flex;align-items:center;gap:14px}
+.clock-big{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--text-dim);letter-spacing:2px}
+.conn-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
+.conn-dot.online{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.6);animation:pg 2s infinite}
+@keyframes pg{0%,100%{box-shadow:0 0 6px rgba(34,197,94,.6)}50%{box-shadow:0 0 12px rgba(34,197,94,.9)}}
+.conn-text{font-size:11px;color:var(--text-dim);font-weight:600}
+.main{flex:1;position:relative;overflow:hidden}
+
+/* VIDEO BACKGROUND — รองรับทั้ง YouTube iframe และ MP4 video */
+#media-wrap{position:absolute;inset:0;z-index:0;background:#000;transition:opacity .5s}
+#media-wrap.dimmed{opacity:.15}
+#yt-frame{width:100%;height:100%;border:none;display:none}
+#mp4-player{width:100%;height:100%;object-fit:cover;display:none}
+#yt-frame.active,#mp4-player.active{display:block}
+
+/* IDLE */
+#idle-state{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);background:var(--bg)}
+#idle-state.hidden{display:none}
+.idle-icon{font-size:64px;opacity:.2;margin-bottom:14px}
+.idle-text{font-size:16px;font-weight:500}
+
+/* QUEUE OVERLAY */
+#qov{position:absolute;inset:0;z-index:5;display:flex;opacity:0;transition:opacity .35s;pointer-events:none}
+#qov.visible{opacity:1;pointer-events:auto}
+#qov::before{content:'';position:absolute;inset:0;background:rgba(245,243,250,.9);backdrop-filter:blur(6px)}
+.ov-calling{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+.ov-calling::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(124,77,255,.1) 0%,transparent 65%);pointer-events:none}
+.ov-qlist{position:relative;width:260px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:-4px 0 20px rgba(124,77,255,.06)}
+.oqhd{padding:12px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+.oqbody{flex:1;overflow-y:auto;padding:8px}
+.oqi{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:6px}
+.oqi.active{background:rgba(124,77,255,.1);border-color:rgba(124,77,255,.3)}
+.oqnum{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text-muted);min-width:28px}
+.oqi.active .oqnum{color:var(--accent)}
+.oqplate{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:1.5px;flex:1}
+.oqplate .l{color:var(--text)}.oqplate .n{color:var(--accent)}
+.oqzone{font-size:10px;color:var(--text-muted);background:var(--surface);border-radius:4px;padding:2px 6px;white-space:nowrap;border:1px solid var(--border)}
+
+/* CALLING DISPLAY */
+.clab{font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.clab.active{color:var(--accent)}
+.cnum{font-family:'IBM Plex Mono',monospace;font-size:clamp(52px,9vw,100px);font-weight:700;color:var(--text-muted);margin-bottom:4px;line-height:1}
+.cnum.active{color:var(--accent)}
+.cplates{display:flex;align-items:center;gap:7px;margin:12px 0 16px;flex-wrap:wrap;justify-content:center}
+.cpc{font-family:'IBM Plex Mono',monospace;font-size:clamp(36px,6vw,70px);font-weight:700;width:clamp(44px,6vw,78px);height:clamp(56px,8vw,96px);display:flex;align-items:center;justify-content:center;background:var(--surface);border:2px solid var(--border);border-radius:12px;color:var(--text-muted);transition:all .3s;box-shadow:var(--shadow)}
+.cpc.ll{color:var(--text);border-color:#c4b5fd}
+.cpc.ln{color:var(--accent);border-color:#c4b5fd}
+.cpc.cur{transform:scale(1.1);box-shadow:0 0 0 3px rgba(124,77,255,.3),0 8px 28px rgba(124,77,255,.2);border-color:var(--accent)}
+.cpc.cur.l,.cpc.cur.n{color:var(--accent2)}
+.czone{font-size:clamp(14px,2.2vw,22px);font-weight:700;color:var(--text-dim);margin-bottom:8px;padding:8px 24px;background:var(--surface);border:2px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
+.czone.active{border-color:var(--accent);color:var(--accent);background:rgba(124,77,255,.06)}
+.cprov{font-size:13px;color:var(--text-muted)}
+
+/* SETTINGS BAR */
+#settings-bar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(245,243,250,.97);border-top:1px solid var(--border);padding:14px 18px;transform:translateY(100%);transition:transform .3s;backdrop-filter:blur(8px)}
+#settings-bar.show{transform:translateY(0)}
+.sbar-title{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.sbar-tabs{display:flex;gap:8px;margin-bottom:14px}
+.stab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all .15s;font-family:'Sarabun',sans-serif}
+.stab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sbar-panel{display:none}
+.sbar-panel.active{display:flex;gap:8px;align-items:center}
+.sbar-input{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;padding:8px 12px;outline:none;font-family:'Sarabun',sans-serif}
+.sbar-input:focus{border-color:var(--accent)}
+.sb{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;white-space:nowrap}
+.sb.sec{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+.sb.red{background:#fef2f2;color:#ef4444;border:1px solid #fecaca}
+
+/* GEAR BUTTON */
+#gear-btn{position:fixed;bottom:14px;right:14px;z-index:15;background:rgba(245,243,250,.9);border:1.5px solid var(--border);border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);opacity:.5;box-shadow:var(--shadow);transition:opacity .2s;backdrop-filter:blur(4px)}
+#gear-btn:hover{opacity:1}
+
+/* UNLOCK */
+.unlock{position:fixed;inset:0;background:rgba(245,243,250,.98);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:18px}
+.unlock.hidden{display:none}
+.unlock-icon{font-size:68px}
+.unlock-text{font-size:20px;font-weight:700;color:var(--text-dim)}
+.unlock-sub{font-size:13px;color:var(--text-muted)}
+.unlock-btn{margin-top:10px;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:17px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(124,77,255,.3)}
+</style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="VNservice">
+  <meta name="theme-color" content="#1a6fe8">
+</head>
+<body>
+
+<div class="unlock" id="uov" onclick="unlockStart()">
+  <div class="unlock-icon">🔔</div>
+  <div class="unlock-text">หน้าจอแสดงคิวรับรถ</div>
+  <div class="unlock-sub">แตะหน้าจอเพื่อเริ่มรับสัญญาณ</div>
+  <button class="unlock-btn">▶ เริ่มใช้งาน</button>
+</div>
+
+<div class="topbar">
+  <div class="tlogo"><div class="ticon">📺</div>ระบบแสดงคิวรับรถ — สถานตรวจสภาพ</div>
+  <div class="tright">
+    <div class="conn-pill"><div class="conn-dot" id="cdot"></div><span class="conn-text" id="clab">กำลังเชื่อมต่อ...</span></div>
+    <div class="clock-big" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="media-wrap">
+    <iframe id="yt-frame" src="about:blank" allow="autoplay;encrypted-media" allowfullscreen></iframe>
+    <video id="mp4-player" autoplay loop muted playsinline></video>
+  </div>
+  <div id="idle-state"><div class="idle-icon">🚗</div><div class="idle-text">รอการเรียกคิว...</div></div>
+  <div id="qov">
+    <div class="ov-calling" id="cpanel"><div class="idle-icon">🔔</div></div>
+    <div class="ov-qlist">
+      <div class="oqhd">คิวรอเรียก</div>
+      <div class="oqbody" id="oqbody"><div style="text-align:center;padding:30px 0;font-size:12px;color:var(--text-muted)">ไม่มีคิว</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS BAR -->
+<div id="settings-bar">
+  <div class="sbar-title">⚙️ ตั้งค่าสื่อพื้นหลัง</div>
+  <div class="sbar-tabs">
+    <button class="stab active" id="tab-yt" onclick="switchTab('yt')">🎬 YouTube</button>
+    <button class="stab" id="tab-mp4" onclick="switchTab('mp4')">🎥 วิดีโอ MP4</button>
+    <button class="stab" id="tab-off" onclick="switchTab('off')">⬛ ปิดสื่อ</button>
+  </div>
+  <div class="sbar-panel active" id="panel-yt">
+    <input class="sbar-input" id="yt-url-input" placeholder="วาง YouTube URL ที่นี่...">
+    <button class="sb" onclick="loadYouTube()">▶ โหลด</button>
+    <button class="sb sec" onclick="toggleSettings()">ปิด</button>
+  </div>
+  <div class="sbar-panel" id="panel-mp4">
+    <input class="sbar-input" id="mp4-url-input" placeholder="วาง URL ไฟล์ MP4 (จาก GitHub Releases หรือ Cloudinary)...">
+    <button class="sb" onclick="loadMP4()">▶ โหลด</button>
+    <button class="sb sec" onclick="toggleSettings()">ปิด</button>
+  </div>
+  <div class="sbar-panel" id="panel-off">
+    <span style="font-size:13px;color:var(--text-muted)">พื้นหลังจะเป็นสีดำ ไม่มีสื่อเล่น</span>
+    <button class="sb red" onclick="stopMedia();toggleSettings()">⬛ ปิดสื่อ</button>
+    <button class="sb sec" onclick="toggleSettings()">ยกเลิก</button>
+  </div>
+</div>
+<div id="gear-btn" onclick="toggleSettings()">⚙️</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const cfg={
+  apiKey:"AIzaSyCFc9wLwD0J9_GcXnJ2xzAVMjnPhVJmwqM",
+  authDomain:"create-98245.firebaseapp.com",
+  databaseURL:"https://create-98245-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"create-98245",
+  storageBucket:"create-98245.firebasestorage.app",
+  messagingSenderId:"490139130684",
+  appId:"1:490139130684:web:a69bfbcb7e61dda952dc39"
+};
+const app=initializeApp(cfg),db=getDatabase(app);
+onValue(ref(db,'.info/connected'),s=>{
+  const on=s.val()===true;
+  document.getElementById('cdot').className='conn-dot'+(on?' online':'');
+  document.getElementById('clab').textContent=on?'เชื่อมต่อแล้ว':'กำลังเชื่อมต่อ...';
+});
+
+let lastCal=null;
+onValue(ref(db,'queue_system'),snap=>{
+  const d=snap.val();if(!d)return;
+  const{queues=[],calling=null}=d;
+  window._rQP(queues,calling);
+  const hasPassed=queues.some(x=>x.status==='passed'||x.status==='calling');
+
+  if(calling&&calling!==lastCal){
+    const q=queues.find(x=>x.id===calling);
+    if(q){
+      if(!window._aReady){
+        window._pendingQueue=q;
+      } else if(!window._isPlaying){
+        window._trigger(q,()=>{});
+      }
+    }
+    lastCal=calling;
+  } else if(!calling){
+    lastCal=null;
+    if(!window._currentSource) window._isPlaying=false;
+  }
+
+  if(calling){
+    const q=queues.find(x=>x.id===calling);
+    if(q)window._showStatic(q);
+  } else if(hasPassed){
+    window._showWaiting();
+  } else {
+    window._showIdle();
+  }
+});
+</script>
+
+<script>
+// ── STATE ──
+let actx=null;
+window._aReady=false;
+window._isPlaying=false;
+window._pendingQueue=null;
+window._currentSource=null;
+let mediaMode='off'; // 'yt' | 'mp4' | 'off'
+
+// ── UNLOCK ──
+function unlockStart(){
+  try{
+    actx=new(window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended')actx.resume();
+    window._aReady=true;
+    preloadCommon();
+  }catch(e){}
+  document.getElementById('uov').classList.add('hidden');
+  if(window._pendingQueue&&!window._isPlaying){
+    window._trigger(window._pendingQueue,()=>{});
+    window._pendingQueue=null;
+  }
+}
+
+// ── CLOCK ──
+setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('th-TH',{hour12:false}),1000);
+document.getElementById('clock').textContent=new Date().toLocaleTimeString('th-TH',{hour12:false});
+
+// ── SETTINGS ──
+function toggleSettings(){document.getElementById('settings-bar').classList.toggle('show');}
+function switchTab(tab){
+  ['yt','mp4','off'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+// ── MEDIA CONTROL ──
+function dimMedia(){document.getElementById('media-wrap').classList.add('dimmed');}
+function undimMedia(){document.getElementById('media-wrap').classList.remove('dimmed');}
+
+function stopMedia(){
+  mediaMode='off';
+  // หยุด YouTube
+  const ytFrame=document.getElementById('yt-frame');
+  ytFrame.src='about:blank';
+  ytFrame.classList.remove('active');
+  // หยุด MP4
+  const mp4=document.getElementById('mp4-player');
+  mp4.pause();mp4.src='';
+  mp4.classList.remove('active');
+}
+
+function loadYouTube(){
+  const url=document.getElementById('yt-url-input').value.trim();
+  const m=url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+  if(!m){alert('YouTube URL ไม่ถูกต้อง');return;}
+  const vid=m[1];
+  stopMedia();
+  mediaMode='yt';
+  const ytFrame=document.getElementById('yt-frame');
+  ytFrame.src=`https://www.youtube.com/embed/${vid}?autoplay=1&enablejsapi=1&loop=1&playlist=${vid}&controls=1&mute=0`;
+  ytFrame.classList.add('active');
+  document.getElementById('mp4-player').classList.remove('active');
+  document.getElementById('idle-state').classList.add('hidden');
+  toggleSettings();
+}
+
+function loadMP4(){
+  const url=document.getElementById('mp4-url-input').value.trim();
+  if(!url){alert('กรุณาใส่ URL ไฟล์ MP4');return;}
+  stopMedia();
+  mediaMode='mp4';
+  const mp4=document.getElementById('mp4-player');
+  mp4.src=url;
+  mp4.muted=false;
+  mp4.loop=true;
+  mp4.classList.add('active');
+  document.getElementById('yt-frame').classList.remove('active');
+  mp4.play().catch(()=>{mp4.muted=true;mp4.play();});
+  document.getElementById('idle-state').classList.add('hidden');
+  toggleSettings();
+}
+
+function pauseMedia(){
+  if(mediaMode==='yt'){
+    try{document.getElementById('yt-frame').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');}catch(e){}
+  } else if(mediaMode==='mp4'){
+    document.getElementById('mp4-player').pause();
+  }
+}
+
+function resumeMedia(){
+  if(mediaMode==='yt'){
+    try{document.getElementById('yt-frame').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');}catch(e){}
+  } else if(mediaMode==='mp4'){
+    const mp4=document.getElementById('mp4-player');
+    mp4.play().catch(()=>{});
+  }
+}
+
+// ── CHIME ──
+function playChime(cb){
+  if(!actx){cb&&cb();return;}
+  if(actx.state==='suspended')actx.resume();
+  [{f:880,s:0,d:.35},{f:660,s:.4,d:.35},{f:880,s:.8,d:.35},{f:1100,s:1.2,d:.45}].forEach(({f,s,d})=>{
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.connect(g);g.connect(actx.destination);o.type='sine';
+    o.frequency.setValueAtTime(f,actx.currentTime+s);
+    g.gain.setValueAtTime(0,actx.currentTime+s);
+    g.gain.linearRampToValueAtTime(.65,actx.currentTime+s+.02);
+    g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+s+d);
+    o.start(actx.currentTime+s);o.stop(actx.currentTime+s+d+.05);
+  });
+  setTimeout(()=>{cb&&cb();},1800);
+}
+
+// ── GAPLESS AUDIO (Web Audio API + Crossfade) ──
+const AUDIO_BASE='audio/';
+const audioCache={};
+
+function stopAllAudio(){
+  try{if(window._currentSource){window._currentSource.stop();window._currentSource=null;}}catch(e){}
+}
+
+async function loadBuffer(file){
+  if(audioCache[file])return audioCache[file];
+  try{
+    const res=await fetch(AUDIO_BASE+file);
+    if(!res.ok)throw new Error('404');
+    const arr=await res.arrayBuffer();
+    const buf=await actx.decodeAudioData(arr);
+    audioCache[file]=buf;
+    return buf;
+  }catch(e){
+    console.warn('โหลดไม่ได้:',file);
+    return null;
+  }
+}
+
+function concatBuffers(buffers){
+  const valid=buffers.filter(Boolean);
+  if(!valid.length)return null;
+  const sr=valid[0].sampleRate;
+  const ch=valid[0].numberOfChannels;
+  const xf=Math.floor(sr*0.005); // crossfade 5ms กระชับขึ้น
+  const total=valid.reduce((s,b,i)=>s+b.length-(i<valid.length-1?xf:0),0);
+  const out=actx.createBuffer(ch,total,sr);
+  let offset=0;
+  for(let bi=0;bi<valid.length;bi++){
+    const buf=valid[bi];
+    for(let c=0;c<ch;c++){
+      const od=out.getChannelData(c);
+      const id=buf.getChannelData(c<buf.numberOfChannels?c:0);
+      for(let i=0;i<buf.length;i++){
+        const pos=offset+i;
+        if(pos>=total)break;
+        let s=id[i];
+        if(bi>0&&i<xf){
+          const fi=i/xf;
+          s*=fi;
+          od[pos]=od[pos]*(1-fi)+s;
+          continue;
+        }
+        if(bi<valid.length-1&&i>=buf.length-xf){
+          s*=(buf.length-i)/xf;
+        }
+        od[pos]=(od[pos]||0)+s;
+      }
+    }
+    offset+=buf.length-(bi<valid.length-1?xf:0);
+  }
+  return out;
+}
+
+async function preloadCommon(){
+  if(!actx)return;
+  const files=['invite.mp3','queue_at.mp3','plate.mp3','province.mp3','pickup.mp3'];
+  await Promise.all(files.map(f=>loadBuffer(f)));
+}
+
+async function playSequence(files,cb){
+  if(!actx){cb&&cb();return;}
+  if(actx.state==='suspended')await actx.resume();
+  const buffers=await Promise.all(files.map(f=>loadBuffer(f)));
+  const merged=concatBuffers(buffers);
+  if(!merged){cb&&cb();return;}
+  await new Promise(resolve=>{
+    stopAllAudio();
+    const src=actx.createBufferSource();
+    src.buffer=merged;
+    src.playbackRate.value=1.25;
+    src.connect(actx.destination);
+    window._currentSource=src;
+    src.onended=()=>{window._currentSource=null;resolve();};
+    src.start(0);
+  });
+  cb&&cb();
+}
+
+// ── BUILD ANNOUNCE FILES ──
+function buildAnnounceFiles(q){
+  const files=[];
+  // เชิญ คิวที่ XX
+  files.push('invite.mp3');
+  files.push('queue_at.mp3');
+  files.push(`num_${String(q.num).padStart(2,'0')}.mp3`);
+  // ทะเบียน + ตัวอักษร + ตัวเลข ต่อกันเลยไม่เว้น
+  files.push('plate.mp3');
+  q.chars.filter(Boolean).forEach(c=>{
+    files.push(/^[0-9]$/.test(c)?`digit_${c}.mp3`:`char_${c}.mp3`);
+  });
+  q.nums.filter(Boolean).forEach(n=>files.push(`digit_${n}.mp3`));
+  // จังหวัด + รับรถได้ที่
+  files.push('province.mp3');
+  files.push(`prov_${q.province}.mp3`);
+  files.push('pickup.mp3');
+  files.push(`zone_${q.zone}.mp3`);
+  return files;
+}
+
+// ── TRIGGER ANNOUNCEMENT ──
+const p2=n=>String(n).padStart(2,'0');
+let calAnim=null;
+
+window._trigger=function(q,doneCb){
+  if(window._isPlaying)return;
+  window._isPlaying=true;
+  stopAllAudio();
+
+  dimMedia(); pauseMedia();
+  document.getElementById('idle-state').classList.add('hidden');
+  document.getElementById('qov').classList.add('visible');
+  animPlate(q);
+
+  const files=buildAnnounceFiles(q);
+  Promise.all(files.map(f=>loadBuffer(f))).then(()=>{
+    playChime(()=>{
+      playSequence(files,()=>{
+        setTimeout(()=>{
+          playChime(()=>{
+            playSequence(files,()=>{
+              window._isPlaying=false;
+              doneCb&&doneCb();
+              setTimeout(()=>{
+                undimMedia();
+                resumeMedia();
+              },800);
+            });
+          });
+        },300);
+      });
+    });
+  });
+};
+
+// ── PLATE ANIMATION ──
+function animPlate(q){
+  if(calAnim)clearInterval(calAnim);
+  const cp=document.getElementById('cpanel');
+  const all=[...q.chars.filter(Boolean),...q.nums.filter(Boolean)];
+  let i=-1;
+  cp.innerHTML=buildCH(q,-1);
+  calAnim=setInterval(()=>{
+    i++;
+    if(i>=all.length){clearInterval(calAnim);calAnim=null;cp.innerHTML=buildCH(q,all.length);return;}
+    cp.innerHTML=buildCH(q,i);
+  },600);
+}
+
+function buildCH(q,ci){
+  const all=[...q.chars.filter(Boolean),...q.nums.filter(Boolean)];
+  const lc=q.chars.filter(Boolean).length;
+  const isL=i=>i<lc;
+  let boxes='';
+  all.forEach((ch,i)=>{
+    if(i===lc&&lc>0)boxes+=`<div style="font-family:'IBM Plex Mono';font-size:clamp(28px,4.5vw,52px);color:var(--text-muted);padding:0 4px">–</div>`;
+    let cls='cpc';
+    if(i<ci)cls+=isL(i)?' ll':' ln';
+    if(i===ci)cls+=' cur '+(isL(i)?'l':'n');
+    boxes+=`<div class="${cls}">${i<=ci?ch:''}</div>`;
+  });
+  const active=ci>=0;
+  return `<div class="clab${active?' active':''}">📢 กรุณารับรถ</div>
+    <div class="cnum${active?' active':''}">คิวที่ ${p2(q.num)}</div>
+    <div class="cplates">${boxes}</div>
+    <div class="czone${active?' active':''}">📍 ${q.zone}</div>
+    <div class="cprov">${q.province}</div>`;
+}
+
+// ── SHOW STATES ──
+window._showWaiting=function(){
+  if(calAnim){clearInterval(calAnim);calAnim=null;}
+  document.getElementById('idle-state').classList.add('hidden');
+  document.getElementById('qov').classList.add('visible');
+  document.getElementById('cpanel').innerHTML=`
+    <div class="clab">รายการรอเรียก</div>
+    <div style="font-size:clamp(36px,6vw,72px);opacity:.15;margin:16px 0">🚗</div>
+    <div style="font-size:15px;color:var(--text-muted);font-weight:500">รอพนักงานเรียกคิว</div>`;
+};
+
+window._showStatic=function(q){
+  document.getElementById('idle-state').classList.add('hidden');
+  document.getElementById('qov').classList.add('visible');
+  const cp=document.getElementById('cpanel');
+  if(!cp.querySelector('.cnum')){
+    if(calAnim){clearInterval(calAnim);calAnim=null;}
+    cp.innerHTML=buildCH(q,99);
+  }
+};
+
+window._showIdle=function(){
+  if(calAnim){clearInterval(calAnim);calAnim=null;}
+  document.getElementById('qov').classList.remove('visible');
+  if(mediaMode==='off'){
+    document.getElementById('idle-state').classList.remove('hidden');
+  } else {
+    document.getElementById('idle-state').classList.add('hidden');
+  }
+  undimMedia();
+  resumeMedia();
+};
+
+// ── QUEUE LIST ──
+window._rQP=function(queues,calId){
+  const active=queues.filter(x=>x.status==='passed'||x.status==='calling');
+  const el=document.getElementById('oqbody');
+  if(!active.length){
+    el.innerHTML=`<div style="text-align:center;padding:30px 0;font-size:12px;color:var(--text-muted)">ไม่มีคิวรอ</div>`;
+    return;
+  }
+  el.innerHTML=active.map(q=>`
+    <div class="oqi${q.id===calId?' active':''}">
+      <div class="oqnum">${p2(q.num)}</div>
+      <div class="oqplate">
+        ${q.chars.filter(Boolean).map(c=>`<span class="l">${c}</span>`).join('')}
+        <span class="l">–</span>
+        ${q.nums.filter(Boolean).map(n=>`<span class="n">${n}</span>`).join('')}
+      </div>
+      <div class="oqzone">${q.zone}</div>
+    </div>`).join('');
+};
+</script>
+</body>
+</html>

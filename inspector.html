@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ห้องตรวจสภาพ — VNservice</title>
+<link rel="manifest" href="manifest-inspector.json">
+<link rel="apple-touch-icon" href="icon-inspector-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VN Inspect">
+<meta name="theme-color" content="#7c3aed">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3fa;--surface:#fff;--surface2:#ede9f8;--border:#ddd6f3;--accent:#7c4dff;--text:#1e1535;--text-dim:#5c4f80;--text-muted:#9b8ec4;--green:#22c55e;--green-bg:#f0fdf4;--green-bd:#bbf7d0;--red:#ef4444;--red-bg:#fef2f2;--red-bd:#fecaca;--yellow:#f59e0b;--yellow-bg:#fffbeb;--yellow-bd:#fde68a;--radius:12px;--shadow:0 1px 4px rgba(124,77,255,.08),0 4px 16px rgba(124,77,255,.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 1px 8px rgba(124,77,255,.08)}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#22c55e,#4ade80);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.hright{display:flex;align-items:center;gap:12px}
+.conn-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
+.conn-dot.online{background:var(--green);box-shadow:0 0 5px rgba(34,197,94,.5)}
+.conn-text{font-size:11px;color:var(--text-dim);font-weight:600}
+.clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:1px}
+.page{max-width:900px;margin:0 auto;padding:24px 20px}
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.stat-num{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);line-height:1}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:600}
+.stat.s-i{border-color:var(--yellow);background:var(--yellow-bg)}.stat.s-i .stat-num{color:#b45309}
+.stat.s-p{border-color:var(--green);background:var(--green-bg)}.stat.s-p .stat-num{color:#16a34a}
+.stat.s-f{border-color:var(--red);background:var(--red-bg)}.stat.s-f .stat-num{color:var(--red)}
+.stat.s-t{border-color:var(--accent);background:rgba(124,77,255,.06)}.stat.s-t .stat-num{color:var(--accent)}
+.section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:14px}
+.cards{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);transition:all .2s}
+.card:hover{border-color:#c4b5fd}
+.card.c-i{border-color:var(--yellow);background:var(--yellow-bg)}
+.card.c-p{border-color:var(--green);background:var(--green-bg)}
+.card.c-f{border-color:var(--red);background:var(--red-bg)}
+.card.c-c{border-color:var(--accent);background:rgba(124,77,255,.06);box-shadow:0 0 0 3px rgba(124,77,255,.1)}
+.card-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.card-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);min-width:42px}
+.card.c-i .card-num{color:#b45309}
+.card-plate{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;letter-spacing:3px}
+.pl{color:var(--text)}.pn{color:var(--accent)}
+.card-info{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:5px}
+.tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.tag-prov{background:var(--surface2);color:var(--text-dim)}
+.tag-zone{background:rgba(124,77,255,.1);color:var(--accent);border:1px solid rgba(124,77,255,.2)}
+.svc-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(124,77,255,.1);color:var(--accent);border:1px solid rgba(124,77,255,.2)}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:none;border-radius:9px;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:700;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-size:14px;padding:10px 20px}
+.btn-start{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
+.btn-start:hover{background:linear-gradient(135deg,#d97706,#f59e0b)}
+.btn-pass{background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff}
+.btn-pass:hover{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.btn-fail{background:linear-gradient(135deg,#ef4444,#f87171);color:#fff}
+.btn-fail:hover{background:linear-gradient(135deg,#dc2626,#ef4444)}
+.btn-call{background:linear-gradient(135deg,#7c4dff,#a78bfa);color:#fff;font-size:15px;padding:12px 24px}
+.btn-call:hover{background:linear-gradient(135deg,#6535e8,#7c4dff)}
+.btn-done{background:var(--green-bg);color:#16a34a;border:1px solid var(--green-bd)}
+.btn-done:hover{background:#dcfce7}
+.btn-note{padding:10px 14px;font-size:13px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);border-radius:9px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif}
+.note-wrap{margin-top:12px;display:none}
+.note-wrap.show{display:block}
+.note-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:14px;padding:9px 12px;outline:none;resize:none;min-height:60px}
+.note-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,77,255,.1)}
+.card-note{font-size:12px;color:var(--text-dim);margin-top:8px;padding:6px 10px;background:rgba(124,77,255,.05);border-radius:6px;border-left:3px solid var(--accent)}
+.doc-img{width:100%;max-height:180px;object-fit:contain;border-radius:8px;border:1px solid var(--border);margin-top:10px;cursor:pointer}
+.empty{text-align:center;padding:60px 20px;color:var(--text-muted);font-size:14px;line-height:2.5}
+.eicon{font-size:48px;opacity:.25;margin-bottom:10px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--accent);color:#fff;border-radius:10px;padding:11px 16px;font-size:13px;font-weight:600;z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;box-shadow:0 8px 24px rgba(124,77,255,.3)}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="logo-icon">🔍</div>ห้องตรวจสภาพ — VNservice</div>
+  <div class="hright">
+    <div class="conn-pill"><div class="conn-dot" id="cdot"></div><span class="conn-text" id="clab">กำลังเชื่อมต่อ...</span></div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+<div class="page">
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="st-w">0</div><div class="stat-label">⏳ รอตรวจ</div></div>
+    <div class="stat s-i"><div class="stat-num" id="st-i">0</div><div class="stat-label">🔍 กำลังตรวจ</div></div>
+    <div class="stat s-p"><div class="stat-num" id="st-p">0</div><div class="stat-label">✅ ผ่าน (วันนี้)</div></div>
+    <div class="stat s-f"><div class="stat-num" id="st-f">0</div><div class="stat-label">❌ ไม่ผ่าน (วันนี้)</div></div>
+    <div class="stat s-t"><div class="stat-num" id="st-t">0</div><div class="stat-label">🚗 รวมวันนี้</div></div>
+  </div>
+  <div class="section-title">คิวรอตรวจสภาพ</div>
+  <div class="cards" id="cards"><div class="empty"><div class="eicon">🚗</div><p>ไม่มีคิวรอตรวจ</p></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,set,onValue}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const cfg={apiKey:"AIzaSyCFc9wLwD0J9_GcXnJ2xzAVMjnPhVJmwqM",authDomain:"create-98245.firebaseapp.com",databaseURL:"https://create-98245-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"create-98245",storageBucket:"create-98245.firebasestorage.app",messagingSenderId:"490139130684",appId:"1:490139130684:web:a69bfbcb7e61dda952dc39"};
+const app=initializeApp(cfg),db=getDatabase(app);
+onValue(ref(db,'.info/connected'),s=>{const on=s.val()===true;document.getElementById('cdot').className='conn-dot'+(on?' online':'');document.getElementById('clab').textContent=on?'เชื่อมต่อแล้ว':'ออฟไลน์';});
+
+let state={queues:[],zones:[],calling:null};
+let stats={passed:0,failed:0,total:0};
+
+function save(){set(ref(db,'queue_system'),{queues:state.queues,nextNum:state.nextNum||1,zones:state.zones,calling:state.calling||null,stats,ts:Date.now()});}
+
+onValue(ref(db,'queue_system'),snap=>{
+  const d=snap.val();if(!d)return;
+  state={queues:Array.isArray(d.queues)?d.queues:Object.values(d.queues||{}),nextNum:d.nextNum||1,zones:d.zones||[],calling:d.calling||null};
+  if(d.stats){stats.passed=d.stats.passed||0;stats.failed=d.stats.failed||0;stats.total=d.stats.total||0;}
+  renderPage();
+});
+
+const SVC={inspect:'🔍 ตรวจสภาพ',register:'📋 ต่อทะเบียน',newreg:'🆕 จดทะเบียนใหม่',tax:'💰 ภาษีขาด>1ปี',transfer:'🔄 โอน',province:'📍 แจ้งย้ายจังหวัด'};
+const p2=n=>String(n).padStart(2,'0');
+
+window.startInspect=function(id){const q=state.queues.find(x=>x.id===id);if(!q)return;q.status='inspecting';save();toast(`เริ่มตรวจ คิว ${p2(q.num)}`);};
+
+window.setResult=function(id,result){
+  const q=state.queues.find(x=>x.id===id);if(!q)return;
+  const noteEl=document.getElementById('note-'+id);
+  q.status=result;q.note=noteEl?noteEl.value.trim():'';
+  if(result==='passed'){stats.passed++;stats.total++;}
+  if(result==='failed'){stats.failed++;stats.total++;}
+  save();
+  toast(result==='passed'?`✅ คิว ${p2(q.num)} ผ่าน — กดเรียกลูกค้าได้เลย`:`❌ คิว ${p2(q.num)} ไม่ผ่าน`);
+};
+
+window.callQueue=function(id){
+  const q=state.queues.find(x=>x.id===id);if(!q)return;
+  state.queues.forEach(x=>{if(x.status==='calling')x.status='passed';});
+  q.status='calling';state.calling=id;save();
+  toast(`📢 เรียกลูกค้า คิว ${p2(q.num)}`);
+};
+
+window.markDone=function(id){
+  const q=state.queues.find(x=>x.id===id);if(!q)return;
+  q.status='done';state.calling=null;save();toast(`✔ คิว ${p2(q.num)} รับรถแล้ว`);
+};
+
+window.toggleNote=function(id){const w=document.getElementById('nw-'+id);if(w)w.classList.toggle('show');};
+
+function svcTags(svcs){if(!svcs?.length)return '';return svcs.map(s=>`<span class="svc-tag">${SVC[s]||s}</span>`).join('');}
+
+function renderPage(){
+  const qs=state.queues;
+  document.getElementById('st-w').textContent=qs.filter(x=>x.status==='waiting').length;
+  document.getElementById('st-i').textContent=qs.filter(x=>x.status==='inspecting').length;
+  document.getElementById('st-p').textContent=stats.passed;
+  document.getElementById('st-f').textContent=stats.failed;
+  document.getElementById('st-t').textContent=stats.total;
+
+  const active=qs.filter(x=>['waiting','inspecting','passed','failed','calling'].includes(x.status));
+  const el=document.getElementById('cards');
+  if(!active.length){el.innerHTML=`<div class="empty"><div class="eicon">🚗</div><p>ไม่มีคิวรอตรวจ</p></div>`;return;}
+
+  el.innerHTML=active.map(q=>{
+    const isIns=q.status==='inspecting',isPassed=q.status==='passed',isFailed=q.status==='failed',isCalling=q.status==='calling';
+    const cardCls=isIns?' c-i':isPassed?' c-p':isFailed?' c-f':isCalling?' c-c':'';
+    const plateHTML=q.chars.filter(Boolean).map(c=>`<span class="pl">${c}</span>`).join('')+'<span class="pl" style="margin:0 3px">–</span>'+q.nums.filter(Boolean).map(n=>`<span class="pn">${n}</span>`).join('');
+    return `
+    <div class="card${cardCls}">
+      <div class="card-top">
+        <div class="card-num">${p2(q.num)}</div>
+        <div style="flex:1">
+          <div class="card-plate">${plateHTML}</div>
+          <div class="card-info">
+            <span class="tag tag-prov">${q.province}</span>
+            <span class="tag tag-zone">${q.zone}</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${svcTags(q.services||[])}</div>
+          ${q.note?`<div class="card-note">📝 ${q.note}</div>`:''}
+          ${q.photoUrl?`<img src="${q.photoUrl}" class="doc-img" onclick="window.open('${q.photoUrl}','_blank')">`:''}
+        </div>
+      </div>
+      <div class="card-actions">
+        ${q.status==='waiting'?`<button class="btn btn-start" onclick="startInspect(${q.id})">🔍 เริ่มตรวจ</button>`:''}
+        ${q.status==='inspecting'?`
+          <button class="btn btn-pass" onclick="setResult(${q.id},'passed')">✅ ผ่าน</button>
+          <button class="btn btn-fail" onclick="setResult(${q.id},'failed')">❌ ไม่ผ่าน</button>
+          <button class="btn-note" onclick="toggleNote(${q.id})">📝 หมายเหตุ</button>`:''}
+        ${q.status==='passed'?`<button class="btn btn-call" onclick="callQueue(${q.id})">📢 เรียกลูกค้ารับรถ</button>`:''}
+        ${q.status==='calling'?`
+          <span style="font-size:14px;font-weight:700;color:var(--accent);padding:8px 12px;background:rgba(124,77,255,.1);border:1px solid rgba(124,77,255,.2);border-radius:9px;display:inline-flex;align-items:center;gap:6px">📢 กำลังเรียกอยู่...</span>
+          <button class="btn btn-done" onclick="markDone(${q.id})">✅ รับรถแล้ว</button>`:''}
+        ${q.status==='failed'?`
+          <span style="font-size:13px;font-weight:700;color:var(--red);padding:8px 12px;background:var(--red-bg);border:1px solid var(--red-bd);border-radius:9px">❌ ไม่ผ่าน — แจ้งพนักงานแล้ว</span>
+          <button class="btn-note" onclick="toggleNote(${q.id})" style="padding:8px 12px;font-size:13px">📝 แก้หมายเหตุ</button>`:''}
+      </div>
+      <div class="note-wrap" id="nw-${q.id}">
+        <textarea class="note-input" id="note-${q.id}" placeholder="ระบุเหตุผล เช่น ไฟเบรกเสีย...">${q.note||''}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('th-TH',{hour12:false}),1000);
+document.getElementById('clock').textContent=new Date().toLocaleTimeString('th-TH',{hour12:false});
+let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),3000);}
+window.toast=toast;
+</script>
+</body>
+</html>
