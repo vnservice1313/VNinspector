@@ -1,0 +1,6 @@
+# wrangler.toml — VNinspector Queue System
+# Cloudflare Pages static deployment config
+
+name = "vninspector"
+pages_build_output_dir = "."
+compatibility_date = "2024-01-01"
