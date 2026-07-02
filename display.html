@@ -3,114 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>หน้าจอแสดงคิว</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>หน้าจอแสดงคิว — VNservice</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f3fa;--surface:#fff;--surface2:#ede9f8;--border:#ddd6f3;--accent:#7c4dff;--accent2:#6535e8;--text:#1e1535;--text-dim:#5c4f80;--text-muted:#9b8ec4;--green:#22c55e;--shadow:0 2px 12px rgba(124,77,255,.1)}
+:root{--navy:#112255;--navy2:#0d1a3e;--orange:#f07820;--orange2:#d96010;--bg-dark:#0c1830;--panel:rgba(255,255,255,.035);--panel-bd:rgba(255,255,255,.07);--txt-dim:rgba(255,255,255,.5);--txt-mut:rgba(255,255,255,.35);--green:#1a9050;--red:#cc2f2f;--purple:#7c3aed}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Sarabun',sans-serif;background:#000;color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.topbar{background:rgba(245,243,250,.95);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:11;backdrop-filter:blur(8px)}
-.tlogo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--text)}
-.ticon{width:30px;height:30px;background:linear-gradient(135deg,#7c4dff,#a78bfa);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.tright{display:flex;align-items:center;gap:14px}
-.clock-big{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--text-dim);letter-spacing:2px}
-.conn-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
-.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
-.conn-dot.online{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.6);animation:pg 2s infinite}
-@keyframes pg{0%,100%{box-shadow:0 0 6px rgba(34,197,94,.6)}50%{box-shadow:0 0 12px rgba(34,197,94,.9)}}
-.conn-text{font-size:11px;color:var(--text-dim);font-weight:600}
-.main{flex:1;position:relative;overflow:hidden}
+body{font-family:'Sarabun',sans-serif;background:#000;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(1.35)}}
+@keyframes calling-ring{0%,100%{box-shadow:0 0 0 0 rgba(240,120,32,.4),0 12px 40px rgba(0,0,0,.5)}60%{box-shadow:0 0 0 26px rgba(240,120,32,0),0 12px 40px rgba(0,0,0,.5)}}
 
-/* VIDEO BACKGROUND — รองรับทั้ง YouTube iframe และ MP4 video */
+.topbar{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.06);padding:0 26px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:11}
+.tlogo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:900;color:#fff}
+.ticon{width:32px;height:32px;background:linear-gradient(145deg,var(--orange),var(--orange2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(240,120,32,.4)}
+.tmid{flex:1;text-align:center;font-size:12.5px;color:var(--txt-mut);font-weight:500}
+.tright{display:flex;align-items:center;gap:16px}
+.clock-big{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--txt-dim);letter-spacing:1.5px}
+.conn-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border-radius:20px;padding:4px 11px}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--txt-mut)}
+.conn-dot.online{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.6);animation:pg 2s infinite}
+@keyframes pg{0%,100%{box-shadow:0 0 6px rgba(74,222,128,.6)}50%{box-shadow:0 0 12px rgba(74,222,128,.9)}}
+.conn-text{font-size:11px;color:var(--txt-dim);font-weight:600}
+
+.main{flex:1;position:relative;overflow:hidden;background:var(--bg-dark)}
+
 #media-wrap{position:absolute;inset:0;z-index:0;background:#000;transition:opacity .5s}
 #media-wrap.dimmed{opacity:.15}
 #yt-frame{width:100%;height:100%;border:none;display:none}
 #mp4-player{width:100%;height:100%;object-fit:cover;display:none}
 #yt-frame.active,#mp4-player.active{display:block}
 
-/* IDLE */
-#idle-state{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);background:var(--bg)}
+#idle-state{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--txt-mut)}
 #idle-state.hidden{display:none}
-.idle-icon{font-size:64px;opacity:.2;margin-bottom:14px}
-.idle-text{font-size:16px;font-weight:500}
+.idle-icon{font-size:72px;opacity:.15;margin-bottom:16px}
+.idle-text{font-size:18px;font-weight:600;color:rgba(255,255,255,.25)}
 
-/* QUEUE OVERLAY */
 #qov{position:absolute;inset:0;z-index:5;display:flex;opacity:0;transition:opacity .35s;pointer-events:none}
 #qov.visible{opacity:1;pointer-events:auto}
-#qov::before{content:'';position:absolute;inset:0;background:rgba(245,243,250,.9);backdrop-filter:blur(6px)}
-.ov-calling{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
-.ov-calling::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(124,77,255,.1) 0%,transparent 65%);pointer-events:none}
-.ov-qlist{position:relative;width:260px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:-4px 0 20px rgba(124,77,255,.06)}
-.oqhd{padding:12px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
-.oqbody{flex:1;overflow-y:auto;padding:8px}
-.oqi{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:6px}
-.oqi.active{background:rgba(124,77,255,.1);border-color:rgba(124,77,255,.3)}
-.oqnum{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text-muted);min-width:28px}
-.oqi.active .oqnum{color:var(--accent)}
-.oqplate{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:1.5px;flex:1}
-.oqplate .l{color:var(--text)}.oqplate .n{color:var(--accent)}
-.oqzone{font-size:10px;color:var(--text-muted);background:var(--surface);border-radius:4px;padding:2px 6px;white-space:nowrap;border:1px solid var(--border)}
+#qov::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(240,120,32,.09) 0%,transparent 65%);pointer-events:none}
+.ov-calling{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:20px;z-index:1}
 
-/* CALLING DISPLAY */
-.clab{font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
-.clab.active{color:var(--accent)}
-.cnum{font-family:'IBM Plex Mono',monospace;font-size:clamp(52px,9vw,100px);font-weight:700;color:var(--text-muted);margin-bottom:4px;line-height:1}
-.cnum.active{color:var(--accent)}
-.cplates{display:flex;align-items:center;gap:7px;margin:12px 0 16px;flex-wrap:wrap;justify-content:center}
-.cpc{font-family:'IBM Plex Mono',monospace;font-size:clamp(36px,6vw,70px);font-weight:700;width:clamp(44px,6vw,78px);height:clamp(56px,8vw,96px);display:flex;align-items:center;justify-content:center;background:var(--surface);border:2px solid var(--border);border-radius:12px;color:var(--text-muted);transition:all .3s;box-shadow:var(--shadow)}
-.cpc.ll{color:var(--text);border-color:#c4b5fd}
-.cpc.ln{color:var(--accent);border-color:#c4b5fd}
-.cpc.cur{transform:scale(1.1);box-shadow:0 0 0 3px rgba(124,77,255,.3),0 8px 28px rgba(124,77,255,.2);border-color:var(--accent)}
-.cpc.cur.l,.cpc.cur.n{color:var(--accent2)}
-.czone{font-size:clamp(14px,2.2vw,22px);font-weight:700;color:var(--text-dim);margin-bottom:8px;padding:8px 24px;background:var(--surface);border:2px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
-.czone.active{border-color:var(--accent);color:var(--accent);background:rgba(124,77,255,.06)}
-.cprov{font-size:13px;color:var(--text-muted)}
+.qlist{position:relative;width:330px;background:var(--panel);border-left:1px solid var(--panel-bd);display:flex;flex-direction:column;flex-shrink:0}
+.qlist-hd{padding:16px 20px;border-bottom:1px solid var(--panel-bd);font-size:10.5px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--txt-mut)}
+.qlist-body{flex:1;overflow-y:auto;padding:14px}
+.qi{padding:12px 14px;border-radius:12px;display:flex;align-items:center;gap:11px;border:1px solid var(--panel-bd);background:var(--panel);margin-bottom:8px;transition:all .2s}
+.qi.active{background:rgba(240,120,32,.14);border-color:rgba(240,120,32,.4)}
+.qi-num{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex-shrink:0;background:rgba(255,255,255,.07);color:rgba(255,255,255,.6)}
+.qi.active .qi-num{background:var(--orange);color:#fff}
+.qi-plate{font-size:16px;font-weight:900;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,.72)}
+.qi.active .qi-plate{color:#fff}
+.qi-sub{font-size:11.5px;color:var(--txt-mut);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* SETTINGS BAR */
-#settings-bar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(245,243,250,.97);border-top:1px solid var(--border);padding:14px 18px;transform:translateY(100%);transition:transform .3s;backdrop-filter:blur(8px)}
+.clab{font-size:14px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--txt-mut);display:flex;align-items:center;gap:11px}
+.clab.active{color:var(--orange)}
+.cdotp{width:10px;height:10px;background:var(--orange);border-radius:50%;animation:pulse-dot .9s infinite}
+.cdotp:nth-child(3){animation-delay:.45s}
+.qnum-label{font-size:13px;color:var(--txt-mut);font-weight:700;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:2px}
+.cnum{font-family:'Sarabun',sans-serif;font-size:clamp(70px,11vw,140px);font-weight:900;color:#fff;line-height:.85;text-align:center;text-shadow:0 0 80px rgba(255,255,255,.15)}
+
+.plate-card{background:#fff;border-radius:18px;padding:18px 40px;display:flex;flex-direction:column;align-items:center;min-width:280px}
+.plate-card.ring{animation:calling-ring 2.2s infinite}
+.pc-flag{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:6px}
+.pc-flag span{font-size:9px;color:#c0202a;font-weight:900;letter-spacing:1.5px}
+.pc-line{flex:1;height:1.5px;background:#dde4f0;margin:0 12px}
+.pc-chars{font-family:'Sarabun',sans-serif;font-weight:900;letter-spacing:4px;display:flex;align-items:center;gap:4px;justify-content:center;flex-wrap:wrap}
+.pcc{font-size:clamp(30px,5vw,58px);color:#c8d0e0;min-width:0.75em;text-align:center;transition:color .2s}
+.pcc.done{color:#1a2540}
+.pcc.done.num{color:var(--orange2)}
+.pcc.cur{color:var(--orange);transform:scale(1.08)}
+.pc-sep{color:#c8d0e0;font-size:clamp(24px,4vw,46px);margin:0 4px}
+.pc-bar{width:85%;height:3px;background:var(--navy);border-radius:2px;margin:10px 0 7px}
+.pc-prov{font-size:16px;color:#3a4a6a;font-weight:800;letter-spacing:1px}
+
+.zonebox{display:flex;align-items:center;gap:12px;padding:14px 30px;background:rgba(240,120,32,.11);border-radius:14px;border:1px solid rgba(240,120,32,.28)}
+.zonebox .zicon{font-size:22px}
+.zonebox .zlab{font-size:11px;color:var(--txt-mut);font-weight:700;letter-spacing:1.5px;margin-bottom:3px}
+.zonebox .zval{font-size:22px;font-weight:900;color:var(--orange)}
+
+#settings-bar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(13,26,62,.97);border-top:1px solid rgba(255,255,255,.08);padding:14px 18px;transform:translateY(100%);transition:transform .3s;backdrop-filter:blur(8px)}
 #settings-bar.show{transform:translateY(0)}
-.sbar-title{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.sbar-title{font-size:12px;font-weight:700;color:var(--txt-mut);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
 .sbar-tabs{display:flex;gap:8px;margin-bottom:14px}
-.stab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all .15s;font-family:'Sarabun',sans-serif}
-.stab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--txt-dim);transition:all .15s;font-family:'Sarabun',sans-serif}
+.stab.active{background:var(--orange);color:#fff;border-color:var(--orange)}
 .sbar-panel{display:none}
 .sbar-panel.active{display:flex;gap:8px;align-items:center}
-.sbar-input{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;padding:8px 12px;outline:none;font-family:'Sarabun',sans-serif}
-.sbar-input:focus{border-color:var(--accent)}
-.sb{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;white-space:nowrap}
-.sb.sec{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
-.sb.red{background:#fef2f2;color:#ef4444;border:1px solid #fecaca}
+.sbar-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:14px;padding:8px 12px;outline:none;font-family:'Sarabun',sans-serif}
+.sbar-input:focus{border-color:var(--orange)}
+.sb{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;white-space:nowrap}
+.sb.sec{background:rgba(255,255,255,.08);color:var(--txt-dim)}
+.sb.red{background:#fef2f2;color:#ef4444}
 
-/* GEAR BUTTON */
-#gear-btn{position:fixed;bottom:14px;right:14px;z-index:15;background:rgba(245,243,250,.9);border:1.5px solid var(--border);border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);opacity:.5;box-shadow:var(--shadow);transition:opacity .2s;backdrop-filter:blur(4px)}
+#gear-btn{position:fixed;bottom:14px;right:14px;z-index:15;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt-dim);opacity:.5;transition:opacity .2s}
 #gear-btn:hover{opacity:1}
 
-/* UNLOCK */
-.unlock{position:fixed;inset:0;background:rgba(245,243,250,.98);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:18px}
+.unlock{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:18px}
 .unlock.hidden{display:none}
 .unlock-icon{font-size:68px}
-.unlock-text{font-size:20px;font-weight:700;color:var(--text-dim)}
-.unlock-sub{font-size:13px;color:var(--text-muted)}
-.unlock-btn{margin-top:10px;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:17px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(124,77,255,.3)}
+.unlock-text{font-size:20px;font-weight:800;color:#fff}
+.unlock-sub{font-size:13px;color:var(--txt-mut)}
+.unlock-btn{margin-top:10px;background:linear-gradient(135deg,var(--orange) 0%,var(--orange2) 100%);color:#fff;border:none;border-radius:14px;padding:16px 44px;font-size:17px;font-weight:900;font-family:'Sarabun',sans-serif;cursor:pointer;box-shadow:0 6px 22px rgba(240,120,32,.42)}
 </style>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="VNservice">
-  <meta name="theme-color" content="#1a6fe8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VNservice">
+<meta name="theme-color" content="#112255">
 </head>
 <body>
 
 <div class="unlock" id="uov" onclick="unlockStart()">
   <div class="unlock-icon">🔔</div>
   <div class="unlock-text">หน้าจอแสดงคิวรับรถ</div>
-  <div class="unlock-sub">แตะหน้าจอเพื่อเริ่มรับสัญญาณ</div>
+  <div class="unlock-sub">แตะหน้าจอเพื่อเริ่มรับสัญญาณเสียง</div>
   <button class="unlock-btn">▶ เริ่มใช้งาน</button>
 </div>
 
 <div class="topbar">
-  <div class="tlogo"><div class="ticon">📺</div>ระบบแสดงคิวรับรถ — สถานตรวจสภาพ</div>
+  <div class="tlogo"><div class="ticon">🚗</div>VNservice</div>
+  <div class="tmid">สถานตรวจสภาพรถ • คลองขลุง จ.กำแพงเพชร</div>
   <div class="tright">
     <div class="conn-pill"><div class="conn-dot" id="cdot"></div><span class="conn-text" id="clab">กำลังเชื่อมต่อ...</span></div>
     <div class="clock-big" id="clock">--:--:--</div>
@@ -125,14 +135,13 @@ body{font-family:'Sarabun',sans-serif;background:#000;color:var(--text);height:1
   <div id="idle-state"><div class="idle-icon">🚗</div><div class="idle-text">รอการเรียกคิว...</div></div>
   <div id="qov">
     <div class="ov-calling" id="cpanel"><div class="idle-icon">🔔</div></div>
-    <div class="ov-qlist">
-      <div class="oqhd">คิวรอเรียก</div>
-      <div class="oqbody" id="oqbody"><div style="text-align:center;padding:30px 0;font-size:12px;color:var(--text-muted)">ไม่มีคิว</div></div>
+    <div class="qlist">
+      <div class="qlist-hd">คิวที่รอ</div>
+      <div class="qlist-body" id="oqbody"><div style="text-align:center;padding:30px 0;font-size:12px;color:var(--txt-mut)">ไม่มีคิว</div></div>
     </div>
   </div>
 </div>
 
-<!-- SETTINGS BAR -->
 <div id="settings-bar">
   <div class="sbar-title">⚙️ ตั้งค่าสื่อพื้นหลัง</div>
   <div class="sbar-tabs">
@@ -146,12 +155,12 @@ body{font-family:'Sarabun',sans-serif;background:#000;color:var(--text);height:1
     <button class="sb sec" onclick="toggleSettings()">ปิด</button>
   </div>
   <div class="sbar-panel" id="panel-mp4">
-    <input class="sbar-input" id="mp4-url-input" placeholder="วาง URL ไฟล์ MP4 (จาก GitHub Releases หรือ Cloudinary)...">
+    <input class="sbar-input" id="mp4-url-input" placeholder="วาง URL ไฟล์ MP4...">
     <button class="sb" onclick="loadMP4()">▶ โหลด</button>
     <button class="sb sec" onclick="toggleSettings()">ปิด</button>
   </div>
   <div class="sbar-panel" id="panel-off">
-    <span style="font-size:13px;color:var(--text-muted)">พื้นหลังจะเป็นสีดำ ไม่มีสื่อเล่น</span>
+    <span style="font-size:13px;color:var(--txt-mut)">พื้นหลังจะเป็นสีดำ ไม่มีสื่อเล่น</span>
     <button class="sb red" onclick="stopMedia();toggleSettings()">⬛ ปิดสื่อ</button>
     <button class="sb sec" onclick="toggleSettings()">ยกเลิก</button>
   </div>
@@ -253,11 +262,9 @@ function undimMedia(){document.getElementById('media-wrap').classList.remove('di
 
 function stopMedia(){
   mediaMode='off';
-  // หยุด YouTube
   const ytFrame=document.getElementById('yt-frame');
   ytFrame.src='about:blank';
   ytFrame.classList.remove('active');
-  // หยุด MP4
   const mp4=document.getElementById('mp4-player');
   mp4.pause();mp4.src='';
   mp4.classList.remove('active');
@@ -328,7 +335,7 @@ function playChime(cb){
 }
 
 // ── GAPLESS AUDIO (Web Audio API + Crossfade) ──
-const AUDIO_BASE='audio/';
+const AUDIO_BASE='Audio/';
 const audioCache={};
 
 function stopAllAudio(){
@@ -355,7 +362,7 @@ function concatBuffers(buffers){
   if(!valid.length)return null;
   const sr=valid[0].sampleRate;
   const ch=valid[0].numberOfChannels;
-  const xf=Math.floor(sr*0.005); // crossfade 5ms กระชับขึ้น
+  const xf=Math.floor(sr*0.01); // crossfade 10ms
   const total=valid.reduce((s,b,i)=>s+b.length-(i<valid.length-1?xf:0),0);
   const out=actx.createBuffer(ch,total,sr);
   let offset=0;
@@ -413,17 +420,14 @@ async function playSequence(files,cb){
 // ── BUILD ANNOUNCE FILES ──
 function buildAnnounceFiles(q){
   const files=[];
-  // เชิญ คิวที่ XX
   files.push('invite.mp3');
   files.push('queue_at.mp3');
   files.push(`num_${String(q.num).padStart(2,'0')}.mp3`);
-  // ทะเบียน + ตัวอักษร + ตัวเลข ต่อกันเลยไม่เว้น
   files.push('plate.mp3');
   q.chars.filter(Boolean).forEach(c=>{
     files.push(/^[0-9]$/.test(c)?`digit_${c}.mp3`:`char_${c}.mp3`);
   });
   q.nums.filter(Boolean).forEach(n=>files.push(`digit_${n}.mp3`));
-  // จังหวัด + รับรถได้ที่
   files.push('province.mp3');
   files.push(`prov_${q.province}.mp3`);
   files.push('pickup.mp3');
@@ -481,23 +485,33 @@ function animPlate(q){
 }
 
 function buildCH(q,ci){
-  const all=[...q.chars.filter(Boolean),...q.nums.filter(Boolean)];
-  const lc=q.chars.filter(Boolean).length;
-  const isL=i=>i<lc;
+  const chars=q.chars.filter(Boolean),nums=q.nums.filter(Boolean);
+  const all=[...chars,...nums];
+  const lc=chars.length;
   let boxes='';
   all.forEach((ch,i)=>{
-    if(i===lc&&lc>0)boxes+=`<div style="font-family:'IBM Plex Mono';font-size:clamp(28px,4.5vw,52px);color:var(--text-muted);padding:0 4px">–</div>`;
-    let cls='cpc';
-    if(i<ci)cls+=isL(i)?' ll':' ln';
-    if(i===ci)cls+=' cur '+(isL(i)?'l':'n');
+    if(i===lc&&lc>0)boxes+=`<div class="pc-sep">–</div>`;
+    let cls='pcc'+(i<lc?'':' num');
+    if(i<ci)cls+=' done';
+    if(i===ci)cls+=' cur';
     boxes+=`<div class="${cls}">${i<=ci?ch:''}</div>`;
   });
   const active=ci>=0;
-  return `<div class="clab${active?' active':''}">📢 กรุณารับรถ</div>
-    <div class="cnum${active?' active':''}">คิวที่ ${p2(q.num)}</div>
-    <div class="cplates">${boxes}</div>
-    <div class="czone${active?' active':''}">📍 ${q.zone}</div>
-    <div class="cprov">${q.province}</div>`;
+  return `<div class="clab${active?' active':''}"><div class="cdotp"></div>📢 กรุณารับรถ<div class="cdotp"></div></div>
+    <div>
+      <div class="qnum-label">คิวที่</div>
+      <div class="cnum">${p2(q.num)}</div>
+    </div>
+    <div class="plate-card${active?' ring':''}">
+      <div class="pc-flag"><span>🇹🇭 THAILAND</span><div class="pc-line"></div></div>
+      <div class="pc-chars">${boxes}</div>
+      <div class="pc-bar"></div>
+      <div class="pc-prov">${q.province}</div>
+    </div>
+    <div class="zonebox">
+      <span class="zicon">📍</span>
+      <div><div class="zlab">รับรถที่</div><div class="zval">${q.zone}</div></div>
+    </div>`;
 }
 
 // ── SHOW STATES ──
@@ -507,8 +521,9 @@ window._showWaiting=function(){
   document.getElementById('qov').classList.add('visible');
   document.getElementById('cpanel').innerHTML=`
     <div class="clab">รายการรอเรียก</div>
-    <div style="font-size:clamp(36px,6vw,72px);opacity:.15;margin:16px 0">🚗</div>
-    <div style="font-size:15px;color:var(--text-muted);font-weight:500">รอพนักงานเรียกคิว</div>`;
+    <div style="font-size:clamp(48px,8vw,80px);opacity:.15">🔇</div>
+    <div style="font-size:16px;color:rgba(255,255,255,.4);font-weight:600">ยังไม่มีการเรียกคิว</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.25)">รอช่างกด "📢 เรียกลูกค้า"</div>`;
 };
 
 window._showStatic=function(q){
@@ -538,18 +553,16 @@ window._rQP=function(queues,calId){
   const active=queues.filter(x=>x.status==='passed'||x.status==='calling');
   const el=document.getElementById('oqbody');
   if(!active.length){
-    el.innerHTML=`<div style="text-align:center;padding:30px 0;font-size:12px;color:var(--text-muted)">ไม่มีคิวรอ</div>`;
+    el.innerHTML=`<div style="text-align:center;padding:30px 0;font-size:12px;color:var(--txt-mut)">ไม่มีคิวรอ</div>`;
     return;
   }
   el.innerHTML=active.map(q=>`
-    <div class="oqi${q.id===calId?' active':''}">
-      <div class="oqnum">${p2(q.num)}</div>
-      <div class="oqplate">
-        ${q.chars.filter(Boolean).map(c=>`<span class="l">${c}</span>`).join('')}
-        <span class="l">–</span>
-        ${q.nums.filter(Boolean).map(n=>`<span class="n">${n}</span>`).join('')}
+    <div class="qi${q.id===calId?' active':''}">
+      <div class="qi-num">${p2(q.num)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="qi-plate">${q.chars.filter(Boolean).join('')} – ${q.nums.filter(Boolean).join('')}</div>
+        <div class="qi-sub">${q.province} · ${q.zone}</div>
       </div>
-      <div class="oqzone">${q.zone}</div>
     </div>`).join('');
 };
 </script>

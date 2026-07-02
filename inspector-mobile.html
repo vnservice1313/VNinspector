@@ -9,27 +9,27 @@
 <meta name="theme-color" content="#7c3aed">
 <link rel="manifest" href="manifest-inspector.json">
 <link rel="apple-touch-icon" href="icon-inspector-192.png">
-<title>ช่างตรวจสภาพ</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<title>ช่างตรวจสภาพ — VNservice</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f3fa;--surface:#fff;--surface2:#ede9f8;--border:#ddd6f3;--accent:#7c4dff;--text:#1e1535;--text-dim:#5c4f80;--text-muted:#9b8ec4;--green:#22c55e;--green-bg:#f0fdf4;--green-bd:#bbf7d0;--red:#ef4444;--red-bg:#fef2f2;--red-bd:#fecaca;--yellow:#f59e0b;--yellow-bg:#fffbeb;--yellow-bd:#fde68a;--radius:14px;--shadow:0 2px 12px rgba(124,77,255,.08)}
+:root{--navy:#112255;--purple:#7c3aed;--purple2:#6535e8;--orange:#f07820;--bg:#eef2fa;--surface:#fff;--surface2:#f1f4fb;--border:#dde4f0;--text:#1a2540;--text-dim:#6a7a9a;--text-mut:#9aa4bc;--green:#1a9050;--green-bg:#e5f7ee;--green-bd:#bbf7d0;--red:#cc2f2f;--red-bg:#fde8e8;--red-bd:#f9caca;--yellow:#f07820;--yellow-bg:#fff4ec;--yellow-bd:#fbd0a8;--radius:14px;--shadow:0 2px 12px rgba(17,34,85,.08)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:15px;display:flex;flex-direction:column}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 8px rgba(34,197,94,.08)}
-.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
-.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#22c55e,#4ade80);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.topbar{background:var(--navy);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:900;color:#fff}
+.logo-icon{width:30px;height:30px;background:linear-gradient(145deg,var(--purple),var(--purple2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px}
 .topbar-right{display:flex;align-items:center;gap:8px}
-.conn-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted)}
-.conn-dot.online{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.5)}
-.clock{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted)}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3)}
+.conn-dot.online{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.6)}
+.clock{font-size:12px;color:rgba(255,255,255,.65)}
 
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
 .stat-mini{text-align:center;padding:8px 4px;border-radius:10px;background:var(--surface2)}
-.stat-mini.s-i{background:var(--yellow-bg)}.stat-mini.s-p{background:var(--green-bg)}.stat-mini.s-f{background:var(--red-bg)}.stat-mini.s-t{background:rgba(124,77,255,.06)}
-.sm-num{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--accent)}
-.stat-mini.s-i .sm-num{color:#b45309}.stat-mini.s-p .sm-num{color:#16a34a}.stat-mini.s-f .sm-num{color:var(--red)}
-.sm-label{font-size:9px;font-weight:700;color:var(--text-muted);margin-top:2px;line-height:1.2}
+.stat-mini.s-p{background:var(--green-bg)}.stat-mini.s-f{background:var(--red-bg)}.stat-mini.s-t{background:#eef2fb}
+.sm-num{font-size:18px;font-weight:900;color:var(--purple)}
+.stat-mini.s-p .sm-num{color:#1a7040}.stat-mini.s-f .sm-num{color:var(--red)}.stat-mini.s-t .sm-num{color:#2856b8}
+.sm-label{font-size:9px;font-weight:700;color:var(--text-mut);margin-top:2px;line-height:1.2}
 
 .cards-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
 .cards-scroll::-webkit-scrollbar{display:none}
@@ -38,48 +38,47 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);fon
 .card.c-i{border-color:var(--yellow);background:var(--yellow-bg)}
 .card.c-p{border-color:var(--green);background:var(--green-bg)}
 .card.c-f{border-color:var(--red);background:var(--red-bg)}
-.card.c-c{border-color:var(--accent);background:rgba(124,77,255,.06);box-shadow:0 0 0 3px rgba(124,77,255,.1)}
+.card.c-c{border-color:var(--purple);background:#f8f5ff;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
 
 .card-head{padding:14px;display:flex;align-items:center;gap:12px}
-.card-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);min-width:40px}
-.card.c-i .card-num{color:#b45309}
-.card-plate{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:700;letter-spacing:2px}
-.pl{color:var(--text)}.pn{color:var(--accent)}
+.card-num{font-size:22px;font-weight:900;color:var(--purple);min-width:40px}
+.card.c-i .card-num{color:#c05a0a}
+.card-plate{font-size:19px;font-weight:900;letter-spacing:1.5px}
 .card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
 .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
 .tag-prov{background:var(--surface2);color:var(--text-dim)}
-.tag-zone{background:rgba(124,77,255,.1);color:var(--accent);border:1px solid rgba(124,77,255,.2)}
-.svc-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(124,77,255,.1);color:var(--accent);border:1px solid rgba(124,77,255,.2)}
+.tag-zone{background:#f3e8ff;color:var(--purple);border:1px solid #e9d5ff}
+.svc-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#eef2fb;color:#2856b8;border:1px solid #dbe4f5}
 
-.doc-img{width:100%;max-height:160px;object-fit:contain;border-radius:8px;border:1px solid var(--border);margin:0 14px 10px;width:calc(100% - 28px);cursor:pointer}
-.card-note{font-size:12px;color:var(--text-dim);margin:0 14px 10px;padding:7px 10px;background:rgba(124,77,255,.05);border-radius:6px;border-left:3px solid var(--accent)}
+.doc-img{width:calc(100% - 28px);max-height:160px;object-fit:contain;border-radius:8px;border:1px solid var(--border);margin:0 14px 10px;cursor:pointer}
+.card-note{font-size:12px;color:var(--text-dim);margin:0 14px 10px;padding:7px 10px;background:#f8f5ff;border-radius:6px;border-left:3px solid var(--purple)}
 
 .card-actions{padding:0 14px 14px;display:flex;gap:7px;flex-wrap:wrap}
-.btn{border:none;border-radius:10px;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:700;font-size:14px;padding:11px 16px;display:inline-flex;align-items:center;gap:6px;transition:all .15s;flex:1;justify-content:center}
+.btn{border:none;border-radius:10px;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:800;font-size:14px;padding:11px 16px;display:inline-flex;align-items:center;gap:6px;flex:1;justify-content:center}
 .btn:active{transform:scale(.96)}
-.btn-start{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
-.btn-pass{background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff}
-.btn-fail{background:linear-gradient(135deg,#ef4444,#f87171);color:#fff}
-.btn-call{background:linear-gradient(135deg,#7c4dff,#a78bfa);color:#fff;font-size:15px;padding:14px 20px}
-.btn-done{background:var(--green-bg);color:#16a34a;border:1.5px solid var(--green-bd)}
-.btn-note-sm{flex:0 0 auto;padding:11px 12px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;font-family:'Sarabun',sans-serif;cursor:pointer}
+.btn-start{background:linear-gradient(135deg,var(--orange),#fbbf24);color:#fff}
+.btn-pass{background:linear-gradient(135deg,var(--green),#4ade80);color:#fff}
+.btn-fail{background:linear-gradient(135deg,var(--red),#f87171);color:#fff}
+.btn-call{background:linear-gradient(135deg,var(--purple),#a78bfa);color:#fff;font-size:15px;padding:14px 20px}
+.btn-done{background:var(--green-bg);color:#1a7040;border:1.5px solid var(--green-bd)}
+.btn-note-sm{flex:0 0 auto;padding:11px 12px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif}
 
 .note-wrap{display:none;padding:0 14px 14px}
 .note-wrap.show{display:block}
 .note-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:14px;padding:9px 12px;outline:none;resize:none;min-height:60px}
-.note-input:focus{border-color:var(--accent)}
+.note-input:focus{border-color:var(--purple)}
 
-.empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty{text-align:center;padding:60px 20px;color:var(--text-mut)}
 .empty-icon{font-size:40px;opacity:.25;margin-bottom:10px}
 
-.toast{position:fixed;bottom:20px;left:16px;right:16px;background:var(--accent);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px;font-weight:600;z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;box-shadow:0 8px 24px rgba(124,77,255,.3);text-align:center}
+.toast{position:fixed;bottom:20px;left:16px;right:16px;background:var(--purple);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px;font-weight:700;z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;text-align:center}
 .toast.show{transform:translateY(0);opacity:1}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="logo"><div class="logo-icon">🔍</div>ห้องตรวจสภาพ</div>
+  <div class="logo"><div class="logo-icon">🔧</div>ห้องตรวจสภาพ</div>
   <div class="topbar-right">
     <div class="conn-dot" id="cdot"></div>
     <div class="clock" id="clock">--:--</div>
@@ -87,10 +86,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);fon
 </div>
 
 <div class="stats-row">
-  <div class="stat-mini"><div class="sm-num" id="st-w">0</div><div class="sm-label">⏳ รอตรวจ</div></div>
-  <div class="stat-mini s-i"><div class="sm-num" id="st-i">0</div><div class="sm-label">🔍 กำลังตรวจ</div></div>
   <div class="stat-mini s-p"><div class="sm-num" id="st-p">0</div><div class="sm-label">✅ ผ่านวันนี้</div></div>
   <div class="stat-mini s-f"><div class="sm-num" id="st-f">0</div><div class="sm-label">❌ ไม่ผ่านวันนี้</div></div>
+  <div class="stat-mini"><div class="sm-num" id="st-w">0</div><div class="sm-label">⏳ รอตรวจ</div></div>
   <div class="stat-mini s-t"><div class="sm-num" id="st-t">0</div><div class="sm-label">🚗 รวมวันนี้</div></div>
 </div>
 
@@ -162,7 +160,6 @@ function svcTags(s){if(!s?.length)return '';return s.map(v=>`<span class="svc-ta
 function renderPage(){
   const qs=state.queues;
   document.getElementById('st-w').textContent=qs.filter(x=>x.status==='waiting').length;
-  document.getElementById('st-i').textContent=qs.filter(x=>x.status==='inspecting').length;
   document.getElementById('st-p').textContent=stats.passed;
   document.getElementById('st-f').textContent=stats.failed;
   document.getElementById('st-t').textContent=stats.total;
@@ -171,7 +168,7 @@ function renderPage(){
   if(!active.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🚗</div><p>ไม่มีคิวรอตรวจ</p></div>`;return;}
   el.innerHTML=active.map(q=>{
     const cardCls=q.status==='inspecting'?' c-i':q.status==='passed'?' c-p':q.status==='failed'?' c-f':q.status==='calling'?' c-c':'';
-    const ph=q.chars.filter(Boolean).map(c=>`<span class="pl">${c}</span>`).join('')+'<span class="pl" style="margin:0 2px">–</span>'+q.nums.filter(Boolean).map(n=>`<span class="pn">${n}</span>`).join('');
+    const ph=q.chars.filter(Boolean).join('')+' – '+q.nums.filter(Boolean).join('');
     return `
     <div class="card${cardCls}">
       <div class="card-head">
@@ -195,7 +192,7 @@ function renderPage(){
           <button class="btn-note-sm" onclick="toggleNote(${q.id})">📝</button>`:''}
         ${q.status==='passed'?`<button class="btn btn-call" onclick="callQueue(${q.id})">📢 เรียกลูกค้ารับรถ</button>`:''}
         ${q.status==='calling'?`
-          <span style="font-size:13px;font-weight:700;color:var(--accent);padding:10px 14px;background:rgba(124,77,255,.1);border:1px solid rgba(124,77,255,.2);border-radius:10px;flex:1;text-align:center">📢 กำลังเรียกอยู่...</span>
+          <span style="font-size:13px;font-weight:700;color:var(--purple);padding:10px 14px;background:#f3e8ff;border:1px solid #e9d5ff;border-radius:10px;flex:1;text-align:center">📢 กำลังเรียกอยู่...</span>
           <button class="btn btn-done" onclick="markDone(${q.id})" style="flex:0 0 auto">✅ รับแล้ว</button>`:''}
         ${q.status==='failed'?`
           <span style="font-size:12px;font-weight:700;color:var(--red);padding:10px 14px;background:var(--red-bg);border:1px solid var(--red-bd);border-radius:10px;flex:1;text-align:center">❌ ไม่ผ่าน</span>

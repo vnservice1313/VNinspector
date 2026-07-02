@@ -8,183 +8,204 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="VNservice">
-<meta name="theme-color" content="#1a6fe8">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#112255">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f3fa;--surface:#fff;--surface2:#ede9f8;--border:#ddd6f3;--accent:#7c4dff;--accent2:#6535e8;--text:#1e1535;--text-dim:#5c4f80;--text-muted:#9b8ec4;--green:#22c55e;--green-bg:#f0fdf4;--green-bd:#bbf7d0;--red:#ef4444;--red-bg:#fef2f2;--red-bd:#fecaca;--radius:12px;--shadow:0 2px 12px rgba(124,77,255,.08)}
+:root{--navy:#112255;--navy2:#0d1a3e;--orange:#f07820;--orange2:#d96010;--bg:#eef2fa;--text:#1a2540;--text-dim:#6a7a9a;--text-mut:#9aa4bc;--border:#dde4f0;--green:#1a9050;--green-bg:#e5f7ee;--red:#cc2f2f;--red-bg:#fde8e8;--blue:#2856b8;--blue-bg:#eef2fb;--radius:14px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(124,77,255,.08)}
-.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700}
-.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#7c4dff,#a78bfa);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+header{background:var(--navy);padding:0 26px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 18px rgba(8,16,48,.3)}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:900;color:#fff}
+.logo-icon{width:34px;height:34px;background:linear-gradient(145deg,var(--orange),var(--orange2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 3px 10px rgba(240,120,32,.4)}
 .hright{display:flex;align-items:center;gap:12px}
-.conn-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
-.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
-.conn-dot.online{background:var(--green);box-shadow:0 0 5px rgba(34,197,94,.5)}
-.conn-text{font-size:11px;color:var(--text-dim);font-weight:600}
-.clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:1px}
-.div{width:1px;height:18px;background:var(--border)}
-.btn{border:none;border-radius:8px;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
-.btn-primary{background:var(--accent);color:#fff;padding:12px 24px;font-size:15px;width:100%;justify-content:center;border-radius:12px}
-.btn-primary:hover{background:var(--accent2)}
-.btn-sm{padding:5px 10px;font-size:12px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim)}
-.btn-sm:hover{background:var(--surface2);color:var(--accent)}
+.conn-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border-radius:20px;padding:5px 12px}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}
+.conn-dot.online{background:#4ade80;box-shadow:0 0 5px rgba(74,222,128,.6)}
+.conn-text{font-size:11.5px;color:rgba(255,255,255,.75);font-weight:600}
+.clock{font-family:'Sarabun',sans-serif;font-size:13px;color:rgba(255,255,255,.6);letter-spacing:.5px}
+.hdiv{width:1px;height:18px;background:rgba(255,255,255,.15)}
+.btn{border:none;border-radius:9px;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:700;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-hdr{padding:7px 14px;font-size:12.5px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.85)}
+.btn-hdr:hover{background:rgba(255,255,255,.15)}
+.btn-hdr.danger{background:rgba(204,47,47,.2);color:#ffb3b3}
+.btn-hdr.danger:hover{background:rgba(204,47,47,.35)}
 
-.page{max-width:600px;margin:0 auto;padding:28px 20px}
-.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px}
-.field{margin-bottom:18px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-input,select{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:15px;padding:10px 13px;width:100%;outline:none;transition:border-color .15s}
-input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,77,255,.1)}
-input::placeholder{color:var(--text-muted)}
-.piw{display:flex;gap:6px;align-items:flex-end}
-.pc{width:46px!important;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:700;text-transform:uppercase;padding:10px 4px}
-.ps{color:var(--text-muted);font-size:18px;padding-bottom:8px}
-.pn{width:40px!important;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:700;padding:10px 3px}
+.page{max-width:760px;margin:0 auto;padding:26px 20px 60px}
+.section-label{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.8px;color:var(--text-mut);margin-bottom:14px}
 
-.svc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
-.stag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .15s;user-select:none}
-.stag input[type=checkbox]{display:none}
-.stag-label{font-size:13px;font-weight:600;color:var(--text-dim)}
-.stag:has(input:checked){background:rgba(124,77,255,.08);border-color:var(--accent)}
-.stag:has(input:checked) .stag-label{color:var(--accent)}
+.qsummary{background:#fff;border-radius:var(--radius);box-shadow:0 4px 20px rgba(17,34,85,.08);padding:16px 22px;margin-bottom:22px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.qs-item .num{font-size:26px;font-weight:900;color:var(--navy);line-height:1}
+.qs-item .num.g{color:var(--green)}.qs-item .num.r{color:var(--red)}.qs-item .num.m{color:var(--text-mut)}
+.qs-item .lab{font-size:11.5px;color:var(--text-mut);font-weight:700;margin-top:2px}
+.qs-next{margin-left:auto;display:flex;align-items:center;gap:8px}
+.qs-next span{font-size:11px;color:var(--text-mut);font-weight:700}
+.qs-next input{width:64px;font-size:15px;font-weight:800;text-align:center;padding:7px;border-radius:9px;background:var(--blue-bg);border:1.5px solid var(--border);color:var(--blue);font-family:'Sarabun',sans-serif}
 
-.photo-area{background:var(--surface);border:2px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:18px}
-.photo-area:hover{border-color:#c4b5fd;background:var(--surface2)}
-.photo-area.has-photo{border-style:solid;border-color:var(--accent);background:rgba(124,77,255,.04)}
-.photo-preview{width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none;margin-bottom:8px}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(17,34,85,.09);overflow:hidden}
+.field-block{padding:26px 28px;border-bottom:1px solid #edf0f8}
+
+.piw{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.plate-th{display:flex;align-items:stretch;border-radius:11px;overflow:hidden;box-shadow:0 4px 14px rgba(17,34,85,.18);flex-shrink:0}
+.plate-flag{background:linear-gradient(160deg,var(--orange),var(--orange2));width:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 0}
+.plate-flag div:first-child{font-size:7.5px;color:#fff;font-weight:900}
+.plate-flag .ln{width:16px;height:1px;background:rgba(255,255,255,.5)}
+.plate-flag div:last-child{font-size:6px;color:rgba(255,255,255,.8)}
+.pc{width:44px;height:56px;background:#fff;border:none;border-left:1px solid #f0f0f5;text-align:center;font-family:'Sarabun',sans-serif;font-size:24px;font-weight:900;color:var(--text);outline:none}
+.pc:first-of-type{border-left:none}
+.psep{font-size:20px;color:var(--text-mut)}
+.pn-wrap{background:#fff;border-radius:11px;overflow:hidden;box-shadow:0 4px 14px rgba(17,34,85,.18);display:flex}
+.pn{width:36px;height:56px;background:#fff;border:none;border-left:1px solid #f0f0f5;text-align:center;font-family:'Sarabun',sans-serif;font-size:24px;font-weight:900;color:var(--text);outline:none}
+.pn:first-child{border-left:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+select{height:52px;padding:0 14px;border:2px solid var(--border);border-radius:11px;font-family:'Sarabun',sans-serif;font-size:14.5px;font-weight:700;color:var(--text);background:#fff;outline:none;cursor:pointer;width:100%}
+select:focus{border-color:var(--blue)}
+
+.svc-hint{font-size:12px;font-weight:700;color:var(--orange);background:#fff4ec;padding:3px 10px;border-radius:20px}
+.svc-grid{display:flex;flex-wrap:wrap;gap:10px}
+.stag{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:50px;border:2px solid var(--border);background:#fff;cursor:pointer;transition:all .15s;user-select:none}
+.stag input{display:none}
+.stag span{font-size:13.5px;font-weight:700;color:var(--text-dim)}
+.stag:has(input:checked){border-color:var(--blue);background:var(--blue-bg)}
+.stag:has(input:checked) span{color:var(--blue)}
+
+.photo-area{border:2px dashed #c8d4e8;border-radius:14px;padding:26px;text-align:center;cursor:pointer;background:#f6f9fd;transition:all .15s}
+.photo-area:hover{border-color:var(--blue);background:#f0f4ff}
+.photo-area.has-photo{border-style:solid;border-color:var(--orange);background:#fff8f2}
+.photo-preview{width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none;margin-bottom:10px}
 .photo-area.has-photo .photo-preview{display:block}
 .photo-area.has-photo .ph-placeholder{display:none}
-.ph-placeholder .ph-icon{font-size:32px;margin-bottom:8px;opacity:.4}
-.ph-placeholder p{font-size:13px;color:var(--text-muted)}
+.ph-icon{font-size:36px;margin-bottom:8px;opacity:.6}
+.ph-text{font-size:14.5px;font-weight:800;color:var(--blue);margin-bottom:4px}
+.ph-sub{font-size:12.5px;color:var(--text-mut)}
+.ph-uploading{font-size:12.5px;color:var(--orange);font-weight:700;margin-top:6px}
 
-.queue-count{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.qc-num{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:var(--accent)}
-.qc-label{font-size:13px;color:var(--text-muted);font-weight:600}
-.qc-next{font-size:11px;color:var(--text-muted);margin-top:2px}
+.submit-wrap{padding:22px 28px}
+.btn-submit{width:100%;padding:18px;background:linear-gradient(135deg,var(--orange) 0%,var(--orange2) 100%);color:#fff;border:none;border-radius:14px;font-family:'Sarabun',sans-serif;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 6px 22px rgba(240,120,32,.4);letter-spacing:.4px;transition:opacity .15s,transform .1s}
+.btn-submit:active{transform:scale(.99)}
+.btn-submit:disabled{opacity:.55;cursor:not-allowed}
+.actions-bar{display:flex;gap:10px;margin-top:12px}
+.btn-outline{flex:1;justify-content:center;padding:11px;font-size:13px;background:#fff;border:1.5px solid var(--border);color:var(--text-dim);border-radius:10px}
+.btn-outline:hover{background:#f4f7fc}
 
-.next-num-wrap{display:flex;align-items:center;gap:8px;margin-left:auto}
-.next-num-input{width:60px!important;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;text-align:center;padding:6px 8px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);color:var(--accent)}
-
-.actions-bar{display:flex;gap:10px;margin-top:8px}
-.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);padding:10px 16px;font-size:13px;border-radius:10px;width:auto}
-
-.toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#fff;border-radius:10px;padding:11px 16px;font-size:13px;font-weight:600;z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;box-shadow:0 8px 24px rgba(124,77,255,.3)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;border-radius:10px;padding:12px 18px;font-size:13.5px;font-weight:700;z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.show{transform:translateY(0);opacity:1}
-.toast.green{background:#22c55e}
-.toast.red{background:#ef4444}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
 
-.zone-modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,21,53,.4);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.zone-modal-overlay{display:none;position:fixed;inset:0;background:rgba(17,34,85,.4);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .zone-modal-overlay.open{display:flex}
-.modal{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:22px;width:440px;max-width:92vw;box-shadow:0 8px 40px rgba(124,77,255,.15)}
-.mtitle{font-size:15px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.macts{display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
-.zrow{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:6px}
+.modal{background:#fff;border-radius:16px;padding:24px;width:440px;max-width:92vw;box-shadow:0 8px 40px rgba(17,34,85,.2)}
+.mtitle{font-size:15px;font-weight:800;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--navy)}
+.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.zrow{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px}
+.zrow span{flex:1;font-size:13.5px;font-weight:600}
+.btn-sm{padding:6px 10px;font-size:12px;background:#fff;border:1px solid var(--border);color:var(--text-dim);border-radius:7px}
+.btn-sm:hover{background:var(--bg);color:var(--blue)}
+.mzinput{display:flex;gap:8px;margin-top:4px}
+.mzinput input{flex:1;height:42px;padding:0 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'Sarabun',sans-serif;font-size:14px;outline:none}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo"><div class="logo-icon">🚗</div>ห้องควบคุม — VNservice</div>
+  <div class="logo"><div class="logo-icon">🚗</div>VNservice — ห้องควบคุม</div>
   <div class="hright">
     <div class="conn-pill"><div class="conn-dot" id="cdot"></div><span class="conn-text" id="clab">กำลังเชื่อมต่อ...</span></div>
-    <div class="div"></div>
+    <div class="hdiv"></div>
     <div class="clock" id="clock">--:--:--</div>
-    <div class="div"></div>
-    <button class="btn btn-sm" onclick="openZoneModal()">⚙️ จุดรับรถ</button>
-    <div class="div"></div>
-    <button class="btn btn-sm" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)" onclick="clearAllEndOfDay()">🗑 สิ้นวัน</button>
+    <div class="hdiv"></div>
+    <button class="btn btn-hdr" onclick="openZoneModal()">⚙️ จุดรับรถ</button>
+    <button class="btn btn-hdr danger" onclick="clearAllEndOfDay()">🗑 สิ้นวัน</button>
   </div>
 </header>
 
 <div class="page">
-  <!-- Queue counter -->
-  <div class="queue-count">
-    <div>
-      <div class="qc-num" id="q-count">0</div>
-      <div class="qc-label">คิวทั้งหมดวันนี้</div>
-    </div>
-    <div style="margin-left:24px">
-      <div class="qc-num" id="q-waiting" style="color:var(--text-muted)">0</div>
-      <div class="qc-label">รอตรวจ</div>
-    </div>
-    <div style="margin-left:24px">
-      <div class="qc-num" id="q-passed" style="color:var(--green)">0</div>
-      <div class="qc-label">ผ่านแล้ว</div>
-    </div>
-    <div style="margin-left:24px">
-      <div class="qc-num" id="q-failed" style="color:var(--red)">0</div>
-      <div class="qc-label">ไม่ผ่าน</div>
-    </div>
-    <div class="next-num-wrap">
-      <span style="font-size:11px;color:var(--text-muted);font-weight:700">คิวถัดไป</span>
-      <input type="number" class="next-num-input" id="nni" min="1" max="9999" value="1" onchange="updateNextNum(this.value)">
-    </div>
+
+  <div class="qsummary">
+    <div class="qs-item"><div class="num" id="q-count">0</div><div class="lab">คิวทั้งหมดวันนี้</div></div>
+    <div class="qs-item"><div class="num m" id="q-waiting">0</div><div class="lab">รอตรวจ</div></div>
+    <div class="qs-item"><div class="num g" id="q-passed">0</div><div class="lab">ผ่านแล้ว</div></div>
+    <div class="qs-item"><div class="num r" id="q-failed">0</div><div class="lab">ไม่ผ่าน</div></div>
+    <div class="qs-next"><span>คิวถัดไป</span><input type="number" id="nni" min="1" max="9999" value="1" onchange="updateNextNum(this.value)"></div>
   </div>
 
-  <!-- FORM -->
-  <div class="field">
-    <div class="section-label">ทะเบียนรถ</div>
-    <div class="piw">
-      <input class="pc" id="c1" maxlength="1" placeholder="ก" oninput="mnM(this,'c2')">
-      <input class="pc" id="c2" maxlength="1" placeholder="ข" oninput="mnM(this,'c3')">
-      <input class="pc" id="c3" maxlength="1" placeholder="ค" oninput="mnM(this,'n1')">
-      <span class="ps">–</span>
-      <input class="pn" id="n1" maxlength="1" placeholder="1" oninput="mn(this,'n2')" type="tel">
-      <input class="pn" id="n2" maxlength="1" placeholder="2" oninput="mn(this,'n3')" type="tel">
-      <input class="pn" id="n3" maxlength="1" placeholder="3" oninput="mn(this,'n4')" type="tel">
-      <input class="pn" id="n4" maxlength="1" placeholder="4" type="tel">
+  <div class="card">
+    <div class="field-block">
+      <div class="section-label">ทะเบียนรถ</div>
+      <div class="piw">
+        <div class="plate-th">
+          <div class="plate-flag"><div>TH</div><div class="ln"></div><div>ไทย</div></div>
+          <input class="pc" id="c1" maxlength="1" placeholder="ก" oninput="mnM(this,'c2')">
+          <input class="pc" id="c2" maxlength="1" placeholder="ข" oninput="mnM(this,'c3')">
+          <input class="pc" id="c3" maxlength="1" placeholder="ค" oninput="mnM(this,'n1')">
+        </div>
+        <span class="psep">—</span>
+        <div class="pn-wrap">
+          <input class="pn" id="n1" maxlength="1" type="tel" placeholder="1" oninput="mn(this,'n2')">
+          <input class="pn" id="n2" maxlength="1" type="tel" placeholder="2" oninput="mn(this,'n3')">
+          <input class="pn" id="n3" maxlength="1" type="tel" placeholder="3" oninput="mn(this,'n4')">
+          <input class="pn" id="n4" maxlength="1" type="tel" placeholder="4">
+        </div>
+      </div>
+      <div class="row2">
+        <div>
+          <div class="section-label" style="margin-bottom:8px">จังหวัด</div>
+          <select id="province">
+            <option value="">-- เลือกจังหวัด --</option>
+            <option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option>
+          </select>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:8px">📍 จุดรับรถ</div>
+          <select id="zone"></select>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="row2">
-    <div>
-      <div class="section-label">จังหวัด</div>
-      <select id="province">
-        <option value="">-- เลือกจังหวัด --</option>
-        <option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option>
-      </select>
+    <div class="field-block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="section-label" style="margin:0">ประเภทบริการ</div>
+        <div class="svc-hint">เลือกได้หลายอย่าง</div>
+      </div>
+      <div class="svc-grid" id="svc-wrap">
+        <label class="stag"><input type="checkbox" value="inspect"><span>🔍 ตรวจสภาพ</span></label>
+        <label class="stag"><input type="checkbox" value="register"><span>📋 ต่อทะเบียน</span></label>
+        <label class="stag"><input type="checkbox" value="newreg"><span>🆕 จดทะเบียนใหม่</span></label>
+        <label class="stag"><input type="checkbox" value="tax"><span>💰 ภาษีขาด&gt;1ปี</span></label>
+        <label class="stag"><input type="checkbox" value="transfer"><span>🔄 โอน</span></label>
+        <label class="stag"><input type="checkbox" value="province"><span>📍 แจ้งย้ายจังหวัด</span></label>
+      </div>
     </div>
-    <div>
-      <div class="section-label">จุดรับรถ</div>
-      <select id="zone"></select>
+
+    <div class="field-block">
+      <div class="section-label">📷 รูปเอกสาร (ไม่บังคับ)</div>
+      <div class="photo-area" id="photo-area" onclick="document.getElementById('doc-photo').click()">
+        <img class="photo-preview" id="photo-preview" alt="เอกสาร">
+        <div class="ph-placeholder">
+          <div class="ph-icon">📷</div>
+          <div class="ph-text">กดเพื่อถ่ายรูป / อัปโหลด</div>
+          <div class="ph-sub">สมุดคู่มือ + ใบขับขี่</div>
+        </div>
+        <input type="file" id="doc-photo" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+      </div>
+      <div class="ph-uploading" id="ph-uploading" style="display:none">⏳ กำลังอัปโหลดรูป...</div>
     </div>
-  </div>
 
-  <div class="section-label">ประเภทบริการ</div>
-  <div class="svc-grid" id="svc-wrap">
-    <label class="stag"><input type="checkbox" value="inspect"><span class="stag-label">🔍 ตรวจสภาพ</span></label>
-    <label class="stag"><input type="checkbox" value="register"><span class="stag-label">📋 ต่อทะเบียน</span></label>
-    <label class="stag"><input type="checkbox" value="newreg"><span class="stag-label">🆕 จดทะเบียนใหม่</span></label>
-    <label class="stag"><input type="checkbox" value="tax"><span class="stag-label">💰 ภาษีขาด&gt;1ปี</span></label>
-    <label class="stag"><input type="checkbox" value="transfer"><span class="stag-label">🔄 โอน</span></label>
-    <label class="stag"><input type="checkbox" value="province"><span class="stag-label">📍 แจ้งย้ายจังหวัด</span></label>
-  </div>
-
-  <div class="section-label">รูปเอกสาร (ไม่บังคับ)</div>
-  <div class="photo-area" id="photo-area" onclick="document.getElementById('doc-photo').click()">
-    <img class="photo-preview" id="photo-preview" alt="เอกสาร">
-    <div class="ph-placeholder">
-      <div class="ph-icon">📷</div>
-      <p>แตะหรือคลิกเพื่อถ่าย/อัปโหลดรูปเอกสาร</p>
+    <div class="submit-wrap">
+      <button class="btn-submit" id="submit-btn" onclick="addQueue()">▶  ส่งข้อมูลให้ช่าง</button>
+      <div class="actions-bar">
+        <button class="btn btn-outline" onclick="clearDone()">🧹 ล้างเสร็จแล้ว</button>
+      </div>
     </div>
-    <input type="file" id="doc-photo" accept="image/*" style="display:none" onchange="handlePhoto(this)">
-  </div>
-
-  <button class="btn btn-primary" onclick="addQueue()">📤 ส่งข้อมูลให้ช่าง</button>
-
-  <div class="actions-bar">
-    <button class="btn btn-sm" onclick="clearDone()" style="flex:1;justify-content:center;padding:10px">🧹 ล้างเสร็จแล้ว</button>
   </div>
 </div>
 
-<!-- ZONE MODAL -->
 <div class="zone-modal-overlay" id="zm">
   <div class="modal">
     <div class="mtitle">⚙️ จัดการจุดรับรถ</div>
-    <div id="zle" style="max-height:260px;overflow-y:auto;margin-bottom:12px"></div>
-    <div style="display:flex;gap:7px">
-      <input type="text" id="zni" placeholder="ชื่อจุดรับรถใหม่" style="flex:1" onkeydown="if(event.key==='Enter')addZone()">
-      <button class="btn btn-primary" style="width:auto;padding:10px 14px" onclick="addZone()">+ เพิ่ม</button>
+    <div id="zle" style="max-height:260px;overflow-y:auto"></div>
+    <div class="mzinput">
+      <input type="text" id="zni" placeholder="ชื่อจุดรับรถใหม่" onkeydown="if(event.key==='Enter')addZone()">
+      <button class="btn btn-hdr" style="background:var(--blue);color:#fff" onclick="addZone()">+ เพิ่ม</button>
     </div>
     <div class="macts"><button class="btn btn-sm" onclick="closeZoneModal()">ปิด</button></div>
   </div>
@@ -222,7 +243,7 @@ onValue(ref(db,'queue_system'),snap=>{
 <script>
 const CLOUD='db7jrlo6m',PRESET='QueueDoc';
 let queues=[],nextNum=1,calId=null,zones=['ลานจอดด้านหน้า','ด้านข้างของร้าน'];
-let pendingPhotoUrl='',stats={passed:0,failed:0,total:0};
+let pendingPhotoUrl='',photoUploading=false,stats={passed:0,failed:0,total:0};
 Object.defineProperty(window,'_q',{get:()=>queues});
 Object.defineProperty(window,'_nn',{get:()=>nextNum});
 Object.defineProperty(window,'_z',{get:()=>zones});
@@ -240,31 +261,60 @@ function updateNextNum(v){const n=parseInt(v);if(!isNaN(n)&&n>=1)nextNum=n;}
 function rZS(){['zone'].forEach(id=>{const s=document.getElementById(id);if(!s)return;const c=s.value;s.innerHTML=zones.map(z=>`<option${z===c?' selected':''}>${z}</option>`).join('');});}
 function openZoneModal(){rZLE();document.getElementById('zm').classList.add('open');}
 function closeZoneModal(){document.getElementById('zm').classList.remove('open');}
-function rZLE(){document.getElementById('zle').innerHTML=zones.map((z,i)=>`<div class="zrow"><span style="flex:1;font-size:13px">${z}</span><button class="btn btn-sm" onclick="mz(${i},-1)" ${i===0?'disabled':''}>↑</button><button class="btn btn-sm" onclick="mz(${i},1)" ${i===zones.length-1?'disabled':''}>↓</button><button class="btn btn-sm" style="color:var(--red)" onclick="dz(${i})">🗑</button></div>`).join('');}
+function rZLE(){document.getElementById('zle').innerHTML=zones.map((z,i)=>`<div class="zrow"><span>${z}</span><button class="btn-sm" onclick="mz(${i},-1)" ${i===0?'disabled':''}>↑</button><button class="btn-sm" onclick="mz(${i},1)" ${i===zones.length-1?'disabled':''}>↓</button><button class="btn-sm" style="color:var(--red)" onclick="dz(${i})">🗑</button></div>`).join('');}
 function addZone(){const inp=document.getElementById('zni'),name=inp.value.trim();if(!name)return;zones.push(name);inp.value='';rZS();rZLE();push();toast('เพิ่มแล้ว');}
 function dz(i){if(zones.length<=1){toast('ต้องมีอย่างน้อย 1 จุด');return;}zones.splice(i,1);rZS();rZLE();push();}
 function mz(i,d){const j=i+d;if(j<0||j>=zones.length)return;[zones[i],zones[j]]=[zones[j],zones[i]];rZS();rZLE();push();}
 document.getElementById('zm').addEventListener('click',e=>{if(e.target===document.getElementById('zm'))closeZoneModal();});
 
-// PHOTO
+// PHOTO — compress → Cloudinary upload (awaited) → base64 fallback if upload fails
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),img=new Image();
+    img.onload=()=>{
+      const maxW=800,maxH=800;let w=img.width,h=img.height;
+      if(w>maxW){h=h*maxW/w;w=maxW;}if(h>maxH){w=w*maxH/h;h=maxH;}
+      canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
+      canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('toBlob failed')),'image/jpeg',0.7);
+    };
+    img.onerror=reject;
+    img.src=URL.createObjectURL(file);
+  });
+}
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=reject;
+    r.readAsDataURL(blob);
+  });
+}
+function updateSubmitState(){
+  document.getElementById('submit-btn').disabled=photoUploading;
+  document.getElementById('ph-uploading').style.display=photoUploading?'block':'none';
+}
 async function handlePhoto(input){
   const file=input.files[0];if(!file)return;
   const area=document.getElementById('photo-area');
   document.getElementById('photo-preview').src=URL.createObjectURL(file);
   area.classList.add('has-photo');
-  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),img=new Image();
-  img.onload=async()=>{
-    const maxW=800,maxH=800;let w=img.width,h=img.height;
-    if(w>maxW){h=h*maxW/w;w=maxW;}if(h>maxH){w=w*maxH/h;h=maxH;}
-    canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
-    canvas.toBlob(async blob=>{
-      const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',PRESET);
-      try{const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:fd});
-        const d=await r.json();pendingPhotoUrl=d.secure_url||'';
-      }catch(e){console.error(e);}
-    },'image/jpeg',0.7);
-  };
-  img.src=URL.createObjectURL(file);
+  photoUploading=true;updateSubmitState();
+  let blob;
+  try{ blob=await compressImage(file); }
+  catch(e){ console.error(e);photoUploading=false;updateSubmitState();toast('ประมวลผลรูปไม่สำเร็จ','red');return; }
+  try{
+    const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',PRESET);
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:fd});
+    if(!r.ok)throw new Error('upload failed');
+    const d=await r.json();
+    if(!d.secure_url)throw new Error('no url');
+    pendingPhotoUrl=d.secure_url;
+  }catch(e){
+    console.warn('Cloudinary upload failed, fallback to base64',e);
+    try{ pendingPhotoUrl=await blobToBase64(blob); }
+    catch(e2){ console.error(e2);pendingPhotoUrl=''; }
+  }
+  photoUploading=false;updateSubmitState();
 }
 function clearPhotoForm(){
   pendingPhotoUrl='';
@@ -275,6 +325,7 @@ function clearPhotoForm(){
 
 // ADD
 function addQueue(){
+  if(photoUploading){toast('กำลังอัปโหลดรูป กรุณารอสักครู่...');return;}
   const c1=document.getElementById('c1').value.trim().toUpperCase(),c2=document.getElementById('c2').value.trim().toUpperCase(),c3=document.getElementById('c3').value.trim().toUpperCase();
   const n1=document.getElementById('n1').value.trim(),n2=document.getElementById('n2').value.trim(),n3=document.getElementById('n3').value.trim(),n4=document.getElementById('n4').value.trim();
   const prov=document.getElementById('province').value,zone=document.getElementById('zone').value;
@@ -282,7 +333,7 @@ function addQueue(){
   if(!c1&&!n1){toast('กรุณากรอกทะเบียนรถ');return;}
   if(!prov){toast('กรุณาเลือกจังหวัด');return;}
   if(!services.length){toast('กรุณาเลือกประเภทบริการ');return;}
-  const q={id:Date.now(),num:nextNum++,chars:[c1,c2,c3],nums:[n1,n2,n3,n4],province:prov,zone,status:'waiting',services,photoUrl:pendingPhotoUrl};
+  const q={id:Date.now(),num:nextNum++,chars:[c1,c2,c3],nums:[n1,n2,n3,n4],province:prov,zone,status:'waiting',services,photoUrl:pendingPhotoUrl,note:''};
   queues.push(q);
   ['c1','c2','c3','n1','n2','n3','n4'].forEach(id=>document.getElementById(id).value='');
   document.querySelectorAll('#svc-wrap input').forEach(x=>x.checked=false);
